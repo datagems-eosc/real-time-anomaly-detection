@@ -236,13 +236,7 @@ python spatial_anomaly_detector.py --time "TIME"
 ---
 
 ## 🛠️ Tech Stack
-
-- **Python 3.x** - Main language
 - **SQLite** - Lightweight database
-- **pandas** - Data processing
-- **numpy** - Numerical computation
-- **statsmodels** (optional) - ARIMA/STL models
-- **scikit-learn** (optional) - ML methods
 - **Data Source**: National Observatory of Athens (NOA)
 
 ---
