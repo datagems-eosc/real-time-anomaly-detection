@@ -33,6 +33,43 @@ flowchart TD
 
 ---
 
+## 🗺️ Station Network Visualization
+
+Understanding the spatial relationships between stations is crucial for the dual-verification strategy.
+
+👉 **[Interactive Map: View Station Neighbors](https://datagems-eosc.github.io/real-time-anomaly-detection/spatial_network_map.html)**
+
+*   **Blue Dots**: Weather stations.
+*   **Red Lines**: Connect stations that are considered "neighbors" (within 100km).
+*   **Logic**: If Station A is anomalous, the system checks these connected neighbors for verification.
+
+---
+
+## 🔬 Supported Detection Methods
+
+### 1. Temporal Methods (Time Dimension)
+Used in **Step 1** to detect if a single station is behaving abnormally compared to its past.
+
+| Method | Description | Best For |
+| :--- | :--- | :--- |
+| **`arima`** | AutoRegressive Integrated Moving Average | **Complex Trends** (Weather, Stocks). Best overall accuracy. |
+| **`3sigma`** | 3-Sigma Rule (Z-Score) | **Extreme Outliers**. Simple and fast, assuming normal distribution. |
+| **`mad`** | Median Absolute Deviation | **Robustness**. Ignores outliers better than 3sigma, but sensitive to flat lines. |
+| **`iqr`** | Interquartile Range | **Boxplot Logic**. Good for exploratory analysis. |
+| **`isolation_forest`** | Isolation Forest (ML) | **Multidimensional**. Can find subtle anomalies in high-dimensional space. |
+| **`stl`** | Seasonal-Trend Decomposition | **Seasonality**. If data has strong daily/weekly cycles. |
+| **`lof`** | Local Outlier Factor | **Density**. Finding outliers in clusters. |
+
+### 2. Spatial Methods (Space Dimension)
+Used in **Step 2** to verify if the anomaly is isolated or widespread.
+
+| Method | Description | Logic |
+| :--- | :--- | :--- |
+| **`pearson`** | Pearson Correlation (Trend) | Checks if neighbor trends match (`>0.6` = Match, `<0.3` = Mismatch). |
+| **`distance`** | Euclidean/Haversine Distance | Checks value magnitude difference (Static snapshot comparison). |
+
+---
+
 ## 🚀 Usage Guide
 
 ### 1. Command Input
