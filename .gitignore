@@ -1,0 +1,12 @@
+# 忽略文件
+ignore/
+*.db
+*.log
+*.pyc
+__pycache__/
+.DS_Store
+*.json
+*.csv
+!README.md
+
+pgdata/

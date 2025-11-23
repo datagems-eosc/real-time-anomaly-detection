@@ -40,6 +40,8 @@ It is recommended to use Conda or venv to manage dependencies.
 
 ```bash
 # Activate your environment
+source ~/software/miniconda3/bin/activate datagem
+# OR
 conda activate datagem
 ```
 
@@ -89,6 +91,22 @@ CREATE TABLE observations (
     PRIMARY KEY (time, station_id)
 );
 ```
+
+## 🔮 Future Roadmap: Scaling Up
+
+While SQLite is excellent for standalone deployment, the system is designed to scale.
+
+### Transition to TimescaleDB (PostgreSQL)
+For enterprise-scale monitoring (e.g., thousands of stations, years of history), we recommend migrating to **TimescaleDB**.
+
+**Migration Steps**:
+1.  **Deploy TimescaleDB**: Use Docker to start a TimescaleDB instance.
+2.  **Update Connection**: Change the DB connection string in `streaming_collector_sqlite.py` from file path to PostgreSQL URL (`postgresql://user:pass@host:5432/weather`).
+3.  **Enable Hypertable**:
+    ```sql
+    SELECT create_hypertable('observations', 'time');
+    ```
+    This automatically partitions data by time for rapid query performance.
 
 ---
 
