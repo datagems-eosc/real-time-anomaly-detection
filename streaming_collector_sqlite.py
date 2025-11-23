@@ -12,7 +12,7 @@ Key features:
 - Robust error handling and reconnection logic
 - Sliding window query optimization
 
-Author: Weather Anomaly Detection Team
+Author: Yanlin Qi (UP Paris)
 Date: 2025-11-22
 """
 
