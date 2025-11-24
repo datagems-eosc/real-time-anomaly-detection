@@ -1,0 +1,1365 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Real-time monitoring and anomaly detection for meteorological stations" name="description"/>
+<meta content="DataGEMS EOSC Project" name="author"/>
+<link href="https://datagems-eosc.github.io/real-time-anomaly-detection/overview/how-it-works/" rel="canonical"/>
+<link href="../features/" rel="prev"/>
+<link href="../../examples/weather-event/" rel="next"/>
+<link href="../../assets/favicon.ico" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.0" name="generator"/>
+<title>How It Works - Real-Time Anomaly Detection</title>
+<link href="../../assets/stylesheets/main.618322db.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="light-blue" data-md-color-primary="blue" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#how-it-works">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Real-Time Anomaly Detection" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Real-Time Anomaly Detection">
+<img alt="logo" src="../../assets/logo.png"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Real-Time Anomaly Detection
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              How It Works
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="light-blue" data-md-color-media="" data-md-color-primary="blue" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="light-blue" data-md-color-media="" data-md-color-primary="blue" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/datagems-eosc/real-time-anomaly-detection" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    datagems-eosc/real-time-anomaly-detection
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Overview
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/weather-event/">
+          
+  
+  
+  Detection Examples
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../system/architecture/">
+          
+  
+  
+  System
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/overview/">
+          
+  
+  
+  API
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../setup/installation/">
+          
+  
+  
+  Setup &amp; Monitoring
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../faq/">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../license/">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Real-Time Anomaly Detection" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Real-Time Anomaly Detection">
+<img alt="logo" src="../../assets/logo.png"/>
+</a>
+    Real-Time Anomaly Detection
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/datagems-eosc/real-time-anomaly-detection" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    datagems-eosc/real-time-anomaly-detection
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_1_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Overview
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../features/">
+<span class="md-ellipsis">
+    
+  
+    Key Features
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    How It Works
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    How It Works
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overall-workflow">
+<span class="md-ellipsis">
+      
+        Overall Workflow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-1-temporal-detection">
+<span class="md-ellipsis">
+      
+        Step 1: Temporal Detection
+      
+    </span>
+</a>
+<nav aria-label="Step 1: Temporal Detection" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#process">
+<span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-arima-detection">
+<span class="md-ellipsis">
+      
+        Example: ARIMA Detection
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-different-methods">
+<span class="md-ellipsis">
+      
+        Why Different Methods?
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-2-spatial-verification">
+<span class="md-ellipsis">
+      
+        Step 2: Spatial Verification
+      
+    </span>
+</a>
+<nav aria-label="Step 2: Spatial Verification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_1">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#process_1">
+<span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-scenarios">
+<span class="md-ellipsis">
+      
+        Example Scenarios
+      
+    </span>
+</a>
+<nav aria-label="Example Scenarios" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scenario-a-extreme-weather-event">
+<span class="md-ellipsis">
+      
+        Scenario A: Extreme Weather Event
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scenario-b-device-failure">
+<span class="md-ellipsis">
+      
+        Scenario B: Device Failure
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-pearson-correlation">
+<span class="md-ellipsis">
+      
+        Why Pearson Correlation?
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-collection-pipeline">
+<span class="md-ellipsis">
+      
+        Data Collection Pipeline
+      
+    </span>
+</a>
+<nav aria-label="Data Collection Pipeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#collector-daemon">
+<span class="md-ellipsis">
+      
+        Collector Daemon
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-storage">
+<span class="md-ellipsis">
+      
+        Database Storage
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sliding-window-mechanism">
+<span class="md-ellipsis">
+      
+        Sliding Window Mechanism
+      
+    </span>
+</a>
+<nav aria-label="Sliding Window Mechanism" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-sliding-windows">
+<span class="md-ellipsis">
+      
+        Why Sliding Windows?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#window-parameters">
+<span class="md-ellipsis">
+      
+        Window Parameters
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#visualization">
+<span class="md-ellipsis">
+      
+        Visualization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output-format">
+<span class="md-ellipsis">
+      
+        Output Format
+      
+    </span>
+</a>
+<nav aria-label="Output Format" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#console-report">
+<span class="md-ellipsis">
+      
+        Console Report
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#json-report-optional">
+<span class="md-ellipsis">
+      
+        JSON Report (Optional)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-characteristics">
+<span class="md-ellipsis">
+      
+        Performance Characteristics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Detection Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Detection Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/weather-event/">
+<span class="md-ellipsis">
+    
+  
+    Weather Event
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/device-failure/">
+<span class="md-ellipsis">
+    
+  
+    Device Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    System
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    System
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/detection-methods/">
+<span class="md-ellipsis">
+    
+  
+    Detection Methods
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../system/station-network/">
+<span class="md-ellipsis">
+    
+  
+    Station Network
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameters
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/response/">
+<span class="md-ellipsis">
+    
+  
+    Response Format
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/examples/">
+<span class="md-ellipsis">
+    
+  
+    Code Examples
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Monitoring
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Setup &amp; Monitoring
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/installation/">
+<span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/configuration/">
+<span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/database/">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../faq/">
+<span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../license/">
+<span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overall-workflow">
+<span class="md-ellipsis">
+      
+        Overall Workflow
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-1-temporal-detection">
+<span class="md-ellipsis">
+      
+        Step 1: Temporal Detection
+      
+    </span>
+</a>
+<nav aria-label="Step 1: Temporal Detection" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#process">
+<span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-arima-detection">
+<span class="md-ellipsis">
+      
+        Example: ARIMA Detection
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-different-methods">
+<span class="md-ellipsis">
+      
+        Why Different Methods?
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#step-2-spatial-verification">
+<span class="md-ellipsis">
+      
+        Step 2: Spatial Verification
+      
+    </span>
+</a>
+<nav aria-label="Step 2: Spatial Verification" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#purpose_1">
+<span class="md-ellipsis">
+      
+        Purpose
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#process_1">
+<span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-scenarios">
+<span class="md-ellipsis">
+      
+        Example Scenarios
+      
+    </span>
+</a>
+<nav aria-label="Example Scenarios" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scenario-a-extreme-weather-event">
+<span class="md-ellipsis">
+      
+        Scenario A: Extreme Weather Event
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#scenario-b-device-failure">
+<span class="md-ellipsis">
+      
+        Scenario B: Device Failure
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-pearson-correlation">
+<span class="md-ellipsis">
+      
+        Why Pearson Correlation?
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#data-collection-pipeline">
+<span class="md-ellipsis">
+      
+        Data Collection Pipeline
+      
+    </span>
+</a>
+<nav aria-label="Data Collection Pipeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#collector-daemon">
+<span class="md-ellipsis">
+      
+        Collector Daemon
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#database-storage">
+<span class="md-ellipsis">
+      
+        Database Storage
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#sliding-window-mechanism">
+<span class="md-ellipsis">
+      
+        Sliding Window Mechanism
+      
+    </span>
+</a>
+<nav aria-label="Sliding Window Mechanism" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#why-sliding-windows">
+<span class="md-ellipsis">
+      
+        Why Sliding Windows?
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#window-parameters">
+<span class="md-ellipsis">
+      
+        Window Parameters
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#visualization">
+<span class="md-ellipsis">
+      
+        Visualization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#output-format">
+<span class="md-ellipsis">
+      
+        Output Format
+      
+    </span>
+</a>
+<nav aria-label="Output Format" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#console-report">
+<span class="md-ellipsis">
+      
+        Console Report
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#json-report-optional">
+<span class="md-ellipsis">
+      
+        JSON Report (Optional)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#performance-characteristics">
+<span class="md-ellipsis">
+      
+        Performance Characteristics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="how-it-works">How It Works</h1>
+<h2 id="overall-workflow">Overall Workflow</h2>
+<pre class="mermaid"><code>flowchart TD
+    A[Start Detection] --&gt; B[Query Data Window]
+    B --&gt; C[For Each Station]
+    C --&gt; D{Temporal Check}
+    D --&gt;|Normal| E[Mark as Normal]
+    D --&gt;|Anomalous| F{Spatial Verify Enabled?}
+    F --&gt;|No| G[Report as Anomaly]
+    F --&gt;|Yes| H[Find Neighbors]
+    H --&gt; I[Compute Correlations]
+    I --&gt; J{Correlation Level?}
+    J --&gt;|High &gt; 0.6| K[Weather Event]
+    J --&gt;|Medium 0.3-0.6| L[Suspected - Manual Review]
+    J --&gt;|Low &lt; 0.3| M[Device Failure]
+    E --&gt; N[Generate Report]
+    G --&gt; N
+    K --&gt; N
+    L --&gt; N
+    M --&gt; N</code></pre>
+<h2 id="step-1-temporal-detection">Step 1: Temporal Detection</h2>
+<h3 id="purpose">Purpose</h3>
+<p>Identify if a station's current reading deviates significantly from its own historical pattern.</p>
+<h3 id="process">Process</h3>
+<ol>
+<li><strong>Query Historical Window</strong>: Retrieve the last N hours of data for the station (default: 6 hours)</li>
+<li><strong>Fit Model</strong>: Train a time series model (e.g., ARIMA) on the historical data</li>
+<li><strong>Predict Expected Value</strong>: Generate a forecast for the current timestamp</li>
+<li><strong>Calculate Deviation</strong>: Compare actual vs. predicted value</li>
+<li><strong>Flag Anomaly</strong>: If deviation exceeds threshold, mark as suspect</li>
+</ol>
+<h3 id="example-arima-detection">Example: ARIMA Detection</h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Simplified example</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="n">historical_data</span> <span class="o">=</span> <span class="n">query_window</span><span class="p">(</span><span class="n">station_id</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="n">model</span> <span class="o">=</span> <span class="n">ARIMA</span><span class="p">(</span><span class="n">historical_data</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="n">fitted_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="n">predicted</span> <span class="o">=</span> <span class="n">fitted_model</span><span class="o">.</span><span class="n">forecast</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="n">actual</span> <span class="o">=</span> <span class="n">get_current_value</span><span class="p">(</span><span class="n">station_id</span><span class="p">)</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">predicted</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="n">flag_as_anomaly</span><span class="p">(</span><span class="n">station_id</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="why-different-methods">Why Different Methods?</h3>
+<p>Different algorithms work better for different scenarios:</p>
+<ul>
+<li><strong>ARIMA</strong>: Best for data with trends and seasonality (weather)</li>
+<li><strong>3-Sigma</strong>: Fast baseline for normally distributed data</li>
+<li><strong>MAD</strong>: Robust when data contains outliers</li>
+<li><strong>Isolation Forest</strong>: Effective for multidimensional patterns</li>
+</ul>
+<h2 id="step-2-spatial-verification">Step 2: Spatial Verification</h2>
+<h3 id="purpose_1">Purpose</h3>
+<p>Determine if the anomaly is localized (device failure) or widespread (weather event).</p>
+<h3 id="process_1">Process</h3>
+<ol>
+<li><strong>Find Neighbors</strong>: Query all stations within 100km radius</li>
+<li><strong>Retrieve Neighbor Data</strong>: Get the same time window for all neighbors</li>
+<li><strong>Handle Missing Data</strong>: Interpolate gaps to ensure robust comparison</li>
+<li><strong>Compute Trend Correlation</strong>: Calculate Pearson correlation on the past 6 hours</li>
+<li><strong>Classify Anomaly</strong>:</li>
+<li>High correlation (&gt; 0.6): Neighbors show same trend → Weather event</li>
+<li>Low correlation (&lt; 0.3): Only this station is anomalous → Device failure</li>
+<li>Medium correlation (0.3-0.6): Uncertain → Requires manual review</li>
+</ol>
+<h3 id="example-scenarios">Example Scenarios</h3>
+<h4 id="scenario-a-extreme-weather-event">Scenario A: Extreme Weather Event</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Station A: Temperature drops from 15°C to 5°C (flagged)
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Station B (50km away): Temperature drops from 16°C to 6°C
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Station C (80km away): Temperature drops from 14°C to 4°C
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>→ High correlation (0.85)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>→ Classification: Weather Event (Ignore)
+</code></pre></div>
+<h4 id="scenario-b-device-failure">Scenario B: Device Failure</h4>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Station A: Temperature shows 99°C (flagged)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>Station B (50km away): Temperature stable at 15°C
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>Station C (80km away): Temperature stable at 14°C
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>→ Low correlation (0.05)
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>→ Classification: Device Failure (Alert!)
+</code></pre></div>
+<h3 id="why-pearson-correlation">Why Pearson Correlation?</h3>
+<p>Pearson correlation measures <strong>trend consistency</strong>, not absolute value similarity:</p>
+<ul>
+<li>Two stations can have different base temperatures but move together</li>
+<li>Example: Station A at 10°C drops to 8°C, Station B at 15°C drops to 13°C
+  → Both drop by 2°C → High correlation</li>
+</ul>
+<h2 id="data-collection-pipeline">Data Collection Pipeline</h2>
+<h3 id="collector-daemon">Collector Daemon</h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Timer
+    participant Collector
+    participant API as NOA API
+    participant DB as Database
+
+    loop Every 10 minutes
+        Timer-&gt;&gt;Collector: Trigger collection
+        Collector-&gt;&gt;API: GET latestValues.geojson
+        API--&gt;&gt;Collector: Return station data
+        Collector-&gt;&gt;Collector: Parse GeoJSON
+        Collector-&gt;&gt;DB: INSERT new observations
+        Collector-&gt;&gt;Collector: Log success
+    end</code></pre>
+<h3 id="database-storage">Database Storage</h3>
+<p>Data is stored with a composite primary key to ensure uniqueness:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">observations</span><span class="w"> </span><span class="p">(</span>
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a><span class="w">    </span><span class="k">time</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a><span class="w">    </span><span class="n">station_id</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a><span class="w">    </span><span class="n">temp_out</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a><span class="w">    </span><span class="n">out_hum</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a><span class="w">    </span><span class="n">wind_speed</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a><span class="w">    </span><span class="n">bar</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a><span class="w">    </span><span class="n">rain</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="k">time</span><span class="p">,</span><span class="w"> </span><span class="n">station_id</span><span class="p">)</span>
+<a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a><span class="p">);</span>
+<a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>
+<a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a><span class="c1">-- Optimized index for time-range queries</span>
+<a href="#__codelineno-3-13" id="__codelineno-3-13" name="__codelineno-3-13"></a><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_time</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">observations</span><span class="p">(</span><span class="k">time</span><span class="w"> </span><span class="k">DESC</span><span class="p">);</span>
+</code></pre></div>
+<h2 id="sliding-window-mechanism">Sliding Window Mechanism</h2>
+<h3 id="why-sliding-windows">Why Sliding Windows?</h3>
+<p>Traditional batch processing loads all historical data into memory:</p>
+<ul>
+<li><strong>Problem</strong>: Memory usage grows linearly with data size</li>
+<li><strong>Result</strong>: System becomes slower over time</li>
+</ul>
+<p>Sliding windows only load the relevant time range:</p>
+<ul>
+<li><strong>Advantage</strong>: Constant memory usage O(1)</li>
+<li><strong>Result</strong>: Performance remains stable regardless of database size</li>
+</ul>
+<h3 id="window-parameters">Window Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Window Size</td>
+<td>6 hours</td>
+<td>Amount of historical data to analyze</td>
+</tr>
+<tr>
+<td>Stride</td>
+<td>10 minutes</td>
+<td>How far the window moves forward</td>
+</tr>
+<tr>
+<td>End Time</td>
+<td>NOW</td>
+<td>The current timestamp to detect</td>
+</tr>
+</tbody>
+</table>
+<h3 id="visualization">Visualization</h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a>Timeline:  [...............|======WINDOW======|*]
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>                          6h ago          NOW (*)
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>                                          ↓
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>                                    Detection Point
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>Each window:
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>- Analyzes data from [NOW-6h] to [NOW]
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>- Predicts value at NOW
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>- Compares with actual value at NOW
+</code></pre></div>
+<h2 id="output-format">Output Format</h2>
+<h3 id="console-report">Console Report</h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a>═══════════════════════════════════════════════
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a> ANOMALY DETECTION REPORT
+<a href="#__codelineno-5-3" id="__codelineno-5-3" name="__codelineno-5-3"></a>═══════════════════════════════════════════════
+<a href="#__codelineno-5-4" id="__codelineno-5-4" name="__codelineno-5-4"></a>
+<a href="#__codelineno-5-5" id="__codelineno-5-5" name="__codelineno-5-5"></a>Total Stations: 14
+<a href="#__codelineno-5-6" id="__codelineno-5-6" name="__codelineno-5-6"></a>Anomalous Stations: 1
+<a href="#__codelineno-5-7" id="__codelineno-5-7" name="__codelineno-5-7"></a>Normal Stations: 13
+<a href="#__codelineno-5-8" id="__codelineno-5-8" name="__codelineno-5-8"></a>
+<a href="#__codelineno-5-9" id="__codelineno-5-9" name="__codelineno-5-9"></a>Anomaly Breakdown:
+<a href="#__codelineno-5-10" id="__codelineno-5-10" name="__codelineno-5-10"></a>  🔴 Device Failures: 1      &lt;- Action required
+<a href="#__codelineno-5-11" id="__codelineno-5-11" name="__codelineno-5-11"></a>  🌧️ Weather Events: 0       &lt;- No action needed
+<a href="#__codelineno-5-12" id="__codelineno-5-12" name="__codelineno-5-12"></a>  ⚠️ Suspected: 0            &lt;- Manual review
+<a href="#__codelineno-5-13" id="__codelineno-5-13" name="__codelineno-5-13"></a>
+<a href="#__codelineno-5-14" id="__codelineno-5-14" name="__codelineno-5-14"></a>[ STATION: uth_volos ]
+<a href="#__codelineno-5-15" id="__codelineno-5-15" name="__codelineno-5-15"></a>  🔴 Temperature Anomaly:
+<a href="#__codelineno-5-16" id="__codelineno-5-16" name="__codelineno-5-16"></a>      Method: arima
+<a href="#__codelineno-5-17" id="__codelineno-5-17" name="__codelineno-5-17"></a>      Expected: 12.5°C | Actual: 25.8°C
+<a href="#__codelineno-5-18" id="__codelineno-5-18" name="__codelineno-5-18"></a>      • 2025-11-22 17:00:00: 25.80°C -&gt; 🔴 Device Failure
+<a href="#__codelineno-5-19" id="__codelineno-5-19" name="__codelineno-5-19"></a>        └─ Diag: Trend Inconsistent (Corr: 0.12, 3 neighbors)
+</code></pre></div>
+<h3 id="json-report-optional">JSON Report (Optional)</h3>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="p">{</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="w">  </span><span class="nt">"timestamp"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2025-11-22T17:00:00Z"</span><span class="p">,</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="w">  </span><span class="nt">"total_stations"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="w">  </span><span class="nt">"anomalous_stations"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="w">  </span><span class="nt">"device_failures"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="w">  </span><span class="nt">"weather_events"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="w">  </span><span class="nt">"suspected"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a><span class="w">  </span><span class="nt">"details"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a><span class="w">    </span><span class="p">{</span>
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a><span class="w">      </span><span class="nt">"station_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uth_volos"</span><span class="p">,</span>
+<a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a><span class="w">      </span><span class="nt">"variable"</span><span class="p">:</span><span class="w"> </span><span class="s2">"temp_out"</span><span class="p">,</span>
+<a href="#__codelineno-6-12" id="__codelineno-6-12" name="__codelineno-6-12"></a><span class="w">      </span><span class="nt">"method"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arima"</span><span class="p">,</span>
+<a href="#__codelineno-6-13" id="__codelineno-6-13" name="__codelineno-6-13"></a><span class="w">      </span><span class="nt">"expected"</span><span class="p">:</span><span class="w"> </span><span class="mf">12.5</span><span class="p">,</span>
+<a href="#__codelineno-6-14" id="__codelineno-6-14" name="__codelineno-6-14"></a><span class="w">      </span><span class="nt">"actual"</span><span class="p">:</span><span class="w"> </span><span class="mf">25.8</span><span class="p">,</span>
+<a href="#__codelineno-6-15" id="__codelineno-6-15" name="__codelineno-6-15"></a><span class="w">      </span><span class="nt">"classification"</span><span class="p">:</span><span class="w"> </span><span class="s2">"device_failure"</span><span class="p">,</span>
+<a href="#__codelineno-6-16" id="__codelineno-6-16" name="__codelineno-6-16"></a><span class="w">      </span><span class="nt">"spatial_correlation"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.12</span><span class="p">,</span>
+<a href="#__codelineno-6-17" id="__codelineno-6-17" name="__codelineno-6-17"></a><span class="w">      </span><span class="nt">"neighbors_checked"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<a href="#__codelineno-6-18" id="__codelineno-6-18" name="__codelineno-6-18"></a><span class="w">    </span><span class="p">}</span>
+<a href="#__codelineno-6-19" id="__codelineno-6-19" name="__codelineno-6-19"></a><span class="w">  </span><span class="p">]</span>
+<a href="#__codelineno-6-20" id="__codelineno-6-20" name="__codelineno-6-20"></a><span class="p">}</span>
+</code></pre></div>
+<h2 id="performance-characteristics">Performance Characteristics</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detection Latency</td>
+<td>&lt; 1 minute</td>
+<td>For 14 stations with ARIMA</td>
+</tr>
+<tr>
+<td>Memory Usage</td>
+<td>~200MB</td>
+<td>Constant regardless of DB size</td>
+</tr>
+<tr>
+<td>Database Size</td>
+<td>~10MB/month</td>
+<td>For 14 stations at 10-min intervals</td>
+</tr>
+<tr>
+<td>Scalability</td>
+<td>Linear</td>
+<td>Scales with number of stations, not time</td>
+</tr>
+</tbody>
+</table>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      DataGEMS is a Research and Innovation Action funded by the European Union  under the Horizon Europe Research and Innovation Programme via Grant Agreement No 101188416.
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/datagems-eosc" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+</body>
+</html>

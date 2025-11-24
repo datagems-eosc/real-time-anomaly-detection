@@ -1,0 +1,1474 @@
+
+<!DOCTYPE html>
+
+<html class="no-js" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Real-time monitoring and anomaly detection for meteorological stations" name="description"/>
+<meta content="DataGEMS EOSC Project" name="author"/>
+<link href="https://datagems-eosc.github.io/real-time-anomaly-detection/system/station-network/" rel="canonical"/>
+<link href="../detection-methods/" rel="prev"/>
+<link href="../../api/overview/" rel="next"/>
+<link href="../../assets/favicon.ico" rel="icon"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.0" name="generator"/>
+<title>Station Network - Real-Time Anomaly Detection</title>
+<link href="../../assets/stylesheets/main.618322db.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="../../stylesheets/extra.css" rel="stylesheet"/>
+<script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+</head>
+<body data-md-color-accent="light-blue" data-md-color-primary="blue" data-md-color-scheme="default" dir="ltr">
+<input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
+<input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
+<label class="md-overlay" for="__drawer"></label>
+<div data-md-component="skip">
+<a class="md-skip" href="#station-network">
+          Skip to content
+        </a>
+</div>
+<div data-md-component="announce">
+</div>
+<div data-md-color-scheme="default" data-md-component="outdated" hidden="">
+</div>
+<header class="md-header" data-md-component="header">
+<nav aria-label="Header" class="md-header__inner md-grid">
+<a aria-label="Real-Time Anomaly Detection" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Real-Time Anomaly Detection">
+<img alt="logo" src="../../assets/logo.png"/>
+</a>
+<label class="md-header__button md-icon" for="__drawer">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+</label>
+<div class="md-header__title" data-md-component="header-title">
+<div class="md-header__ellipsis">
+<div class="md-header__topic">
+<span class="md-ellipsis">
+            Real-Time Anomaly Detection
+          </span>
+</div>
+<div class="md-header__topic" data-md-component="header-topic">
+<span class="md-ellipsis">
+            
+              Station Network
+            
+          </span>
+</div>
+</div>
+</div>
+<form class="md-header__option" data-md-component="palette">
+<input aria-label="Switch to dark mode" class="md-option" data-md-color-accent="light-blue" data-md-color-media="" data-md-color-primary="blue" data-md-color-scheme="default" id="__palette_0" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_1" hidden="" title="Switch to dark mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+<input aria-label="Switch to light mode" class="md-option" data-md-color-accent="light-blue" data-md-color-media="" data-md-color-primary="blue" data-md-color-scheme="slate" id="__palette_1" name="__palette" type="radio"/>
+<label class="md-header__button md-icon" for="__palette_0" hidden="" title="Switch to light mode">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"></path></svg>
+</label>
+</form>
+<script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+<label class="md-header__button md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+</label>
+<div class="md-search" data-md-component="search" role="dialog">
+<label class="md-search__overlay" for="__search"></label>
+<div class="md-search__inner" role="search">
+<form class="md-search__form" name="search">
+<input aria-label="Search" autocapitalize="off" autocomplete="off" autocorrect="off" class="md-search__input" data-md-component="search-query" name="query" placeholder="Search" required="" spellcheck="false" type="text"/>
+<label class="md-search__icon md-icon" for="__search">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+</label>
+<nav aria-label="Search" class="md-search__options">
+<button aria-label="Clear" class="md-search__icon md-icon" tabindex="-1" title="Clear" type="reset">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+</button>
+</nav>
+<div class="md-search__suggest" data-md-component="search-suggest"></div>
+</form>
+<div class="md-search__output">
+<div class="md-search__scrollwrap" data-md-scrollfix="" tabindex="0">
+<div class="md-search-result" data-md-component="search-result">
+<div class="md-search-result__meta">
+            Initializing search
+          </div>
+<ol class="md-search-result__list" role="presentation"></ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/datagems-eosc/real-time-anomaly-detection" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    datagems-eosc/real-time-anomaly-detection
+  </div>
+</a>
+</div>
+</nav>
+</header>
+<div class="md-container" data-md-component="container">
+<nav aria-label="Tabs" class="md-tabs" data-md-component="tabs">
+<div class="md-grid">
+<ul class="md-tabs__list">
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../..">
+          
+  
+  
+  Overview
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../examples/weather-event/">
+          
+  
+  
+  Detection Examples
+
+        </a>
+</li>
+<li class="md-tabs__item md-tabs__item--active">
+<a class="md-tabs__link" href="../architecture/">
+          
+  
+  
+  System
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../api/overview/">
+          
+  
+  
+  API
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../setup/installation/">
+          
+  
+  
+  Setup &amp; Monitoring
+
+        </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../faq/">
+        
+  
+  
+    
+  
+  FAQ
+
+      </a>
+</li>
+<li class="md-tabs__item">
+<a class="md-tabs__link" href="../../license/">
+        
+  
+  
+    
+  
+  License
+
+      </a>
+</li>
+</ul>
+</div>
+</nav>
+<main class="md-main" data-md-component="main">
+<div class="md-main__inner md-grid">
+<div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--lifted" data-md-level="0">
+<label class="md-nav__title" for="__drawer">
+<a aria-label="Real-Time Anomaly Detection" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Real-Time Anomaly Detection">
+<img alt="logo" src="../../assets/logo.png"/>
+</a>
+    Real-Time Anomaly Detection
+  </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/datagems-eosc/real-time-anomaly-detection" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+</div>
+<div class="md-source__repository">
+    datagems-eosc/real-time-anomaly-detection
+  </div>
+</a>
+</div>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_1" type="checkbox"/>
+<label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_1_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_1">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Overview
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../..">
+<span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/features/">
+<span class="md-ellipsis">
+    
+  
+    Key Features
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../overview/how-it-works/">
+<span class="md-ellipsis">
+    
+  
+    How It Works
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_2" type="checkbox"/>
+<label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Detection Examples
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_2_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_2">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Detection Examples
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/weather-event/">
+<span class="md-ellipsis">
+    
+  
+    Weather Event
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../examples/device-failure/">
+<span class="md-ellipsis">
+    
+  
+    Device Failure
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" id="__nav_3" type="checkbox"/>
+<label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+<span class="md-ellipsis">
+    
+  
+    System
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="true" aria-labelledby="__nav_3_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_3">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    System
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../architecture/">
+<span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../detection-methods/">
+<span class="md-ellipsis">
+    
+  
+    Detection Methods
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" id="__toc" type="checkbox"/>
+<label class="md-nav__link md-nav__link--active" for="__toc">
+<span class="md-ellipsis">
+    
+  
+    Station Network
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<a class="md-nav__link md-nav__link--active" href="./">
+<span class="md-ellipsis">
+    
+  
+    Station Network
+  
+
+    
+  </span>
+</a>
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interactive-map">
+<span class="md-ellipsis">
+      
+        Interactive Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#map-legend">
+<span class="md-ellipsis">
+      
+        Map Legend
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#station-details">
+<span class="md-ellipsis">
+      
+        Station Details
+      
+    </span>
+</a>
+<nav aria-label="Station Details" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#station-list">
+<span class="md-ellipsis">
+      
+        Station List
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#neighbor-selection-criteria">
+<span class="md-ellipsis">
+      
+        Neighbor Selection Criteria
+      
+    </span>
+</a>
+<nav aria-label="Neighbor Selection Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#distance-threshold-100km">
+<span class="md-ellipsis">
+      
+        Distance Threshold: 100km
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#distance-calculation">
+<span class="md-ellipsis">
+      
+        Distance Calculation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#neighbor-relationships">
+<span class="md-ellipsis">
+      
+        Neighbor Relationships
+      
+    </span>
+</a>
+<nav aria-label="Neighbor Relationships" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-uth_volos-station">
+<span class="md-ellipsis">
+      
+        Example: uth_volos Station
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#isolated-stations">
+<span class="md-ellipsis">
+      
+        Isolated Stations
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-topology">
+<span class="md-ellipsis">
+      
+        Network Topology
+      
+    </span>
+</a>
+<nav aria-label="Network Topology" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connectivity-graph">
+<span class="md-ellipsis">
+      
+        Connectivity Graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-statistics">
+<span class="md-ellipsis">
+      
+        Network Statistics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spatial-correlation-patterns">
+<span class="md-ellipsis">
+      
+        Spatial Correlation Patterns
+      
+    </span>
+</a>
+<nav aria-label="Spatial Correlation Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#typical-weather-event">
+<span class="md-ellipsis">
+      
+        Typical Weather Event
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#typical-device-failure">
+<span class="md-ellipsis">
+      
+        Typical Device Failure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-case-local-phenomenon">
+<span class="md-ellipsis">
+      
+        Edge Case: Local Phenomenon
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dynamic-neighbor-selection">
+<span class="md-ellipsis">
+      
+        Dynamic Neighbor Selection
+      
+    </span>
+</a>
+<nav aria-label="Dynamic Neighbor Selection" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-implementation">
+<span class="md-ellipsis">
+      
+        Current Implementation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement">
+<span class="md-ellipsis">
+      
+        Future Enhancement
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#map-generation">
+<span class="md-ellipsis">
+      
+        Map Generation
+      
+    </span>
+</a>
+<nav aria-label="Map Generation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#customization">
+<span class="md-ellipsis">
+      
+        Customization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_4" type="checkbox"/>
+<label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_4_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_4">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    API
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/overview/">
+<span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/parameters/">
+<span class="md-ellipsis">
+    
+  
+    Parameters
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/response/">
+<span class="md-ellipsis">
+    
+  
+    Response Format
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../api/examples/">
+<span class="md-ellipsis">
+    
+  
+    Code Examples
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item md-nav__item--nested">
+<input class="md-nav__toggle md-toggle md-toggle--indeterminate" id="__nav_5" type="checkbox"/>
+<label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+<span class="md-ellipsis">
+    
+  
+    Setup &amp; Monitoring
+  
+
+    
+  </span>
+<span class="md-nav__icon md-icon"></span>
+</label>
+<nav aria-expanded="false" aria-labelledby="__nav_5_label" class="md-nav" data-md-level="1">
+<label class="md-nav__title" for="__nav_5">
+<span class="md-nav__icon md-icon"></span>
+            
+  
+    Setup &amp; Monitoring
+  
+
+          </label>
+<ul class="md-nav__list" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/installation/">
+<span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/configuration/">
+<span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/deployment/">
+<span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../setup/database/">
+<span class="md-ellipsis">
+    
+  
+    Database Options
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../faq/">
+<span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../license/">
+<span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+<div class="md-sidebar__scrollwrap">
+<div class="md-sidebar__inner">
+<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
+<label class="md-nav__title" for="__toc">
+<span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#overview">
+<span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#interactive-map">
+<span class="md-ellipsis">
+      
+        Interactive Map
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#map-legend">
+<span class="md-ellipsis">
+      
+        Map Legend
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#station-details">
+<span class="md-ellipsis">
+      
+        Station Details
+      
+    </span>
+</a>
+<nav aria-label="Station Details" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#station-list">
+<span class="md-ellipsis">
+      
+        Station List
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#neighbor-selection-criteria">
+<span class="md-ellipsis">
+      
+        Neighbor Selection Criteria
+      
+    </span>
+</a>
+<nav aria-label="Neighbor Selection Criteria" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#distance-threshold-100km">
+<span class="md-ellipsis">
+      
+        Distance Threshold: 100km
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#distance-calculation">
+<span class="md-ellipsis">
+      
+        Distance Calculation
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#neighbor-relationships">
+<span class="md-ellipsis">
+      
+        Neighbor Relationships
+      
+    </span>
+</a>
+<nav aria-label="Neighbor Relationships" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#example-uth_volos-station">
+<span class="md-ellipsis">
+      
+        Example: uth_volos Station
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#isolated-stations">
+<span class="md-ellipsis">
+      
+        Isolated Stations
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-topology">
+<span class="md-ellipsis">
+      
+        Network Topology
+      
+    </span>
+</a>
+<nav aria-label="Network Topology" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#connectivity-graph">
+<span class="md-ellipsis">
+      
+        Connectivity Graph
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#network-statistics">
+<span class="md-ellipsis">
+      
+        Network Statistics
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#spatial-correlation-patterns">
+<span class="md-ellipsis">
+      
+        Spatial Correlation Patterns
+      
+    </span>
+</a>
+<nav aria-label="Spatial Correlation Patterns" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#typical-weather-event">
+<span class="md-ellipsis">
+      
+        Typical Weather Event
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#typical-device-failure">
+<span class="md-ellipsis">
+      
+        Typical Device Failure
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#edge-case-local-phenomenon">
+<span class="md-ellipsis">
+      
+        Edge Case: Local Phenomenon
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dynamic-neighbor-selection">
+<span class="md-ellipsis">
+      
+        Dynamic Neighbor Selection
+      
+    </span>
+</a>
+<nav aria-label="Dynamic Neighbor Selection" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#current-implementation">
+<span class="md-ellipsis">
+      
+        Current Implementation
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#future-enhancement">
+<span class="md-ellipsis">
+      
+        Future Enhancement
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#map-generation">
+<span class="md-ellipsis">
+      
+        Map Generation
+      
+    </span>
+</a>
+<nav aria-label="Map Generation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#customization">
+<span class="md-ellipsis">
+      
+        Customization
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</div>
+<div class="md-content" data-md-component="content">
+<article class="md-content__inner md-typeset">
+<h1 id="station-network">Station Network</h1>
+<h2 id="overview">Overview</h2>
+<p>The Real-Time Anomaly Detection system monitors 14 meteorological stations operated by the National Observatory of Athens (NOA). Understanding the spatial relationships between these stations is crucial for the dual-verification strategy.</p>
+<h2 id="interactive-map">Interactive Map</h2>
+<iframe height="600px" src="../spatial_network_map.html" style="border:1px solid #ccc; border-radius: 4px;" width="100%"></iframe>
+<p><a class="md-button" href="../../spatial_network_map.html">Open in new window</a></p>
+<h2 id="map-legend">Map Legend</h2>
+<ul>
+<li><strong>Blue Markers</strong>: Weather station locations</li>
+<li><strong>Red Lines</strong>: Neighbor connections (stations within 100km)</li>
+<li><strong>Hover/Click</strong>: View station details</li>
+</ul>
+<h2 id="station-details">Station Details</h2>
+<h3 id="station-list">Station List</h3>
+<table>
+<thead>
+<tr>
+<th>Station ID</th>
+<th>Name</th>
+<th>Location</th>
+<th>Elevation</th>
+<th>Active Neighbors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uth_volos</td>
+<td>University of Thessaly</td>
+<td>Volos</td>
+<td>15m</td>
+<td>3</td>
+</tr>
+<tr>
+<td>volos</td>
+<td>Volos City</td>
+<td>Volos</td>
+<td>5m</td>
+<td>4</td>
+</tr>
+<tr>
+<td>zagora</td>
+<td>Zagora</td>
+<td>Pelion</td>
+<td>480m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>pelion</td>
+<td>Pelion</td>
+<td>Mt. Pelion</td>
+<td>1200m</td>
+<td>1</td>
+</tr>
+<tr>
+<td>anavra</td>
+<td>Anavra</td>
+<td>Anavra</td>
+<td>320m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>domokos</td>
+<td>Domokos</td>
+<td>Domokos</td>
+<td>280m</td>
+<td>3</td>
+</tr>
+<tr>
+<td>karditsa</td>
+<td>Karditsa</td>
+<td>Karditsa</td>
+<td>110m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>larissa</td>
+<td>Larissa</td>
+<td>Larissa</td>
+<td>75m</td>
+<td>4</td>
+</tr>
+<tr>
+<td>trikala</td>
+<td>Trikala</td>
+<td>Trikala</td>
+<td>115m</td>
+<td>3</td>
+</tr>
+<tr>
+<td>pyli</td>
+<td>Pyli</td>
+<td>Pyli</td>
+<td>310m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>metsovo</td>
+<td>Metsovo</td>
+<td>Metsovo</td>
+<td>1160m</td>
+<td>1</td>
+</tr>
+<tr>
+<td>ioannina</td>
+<td>Ioannina</td>
+<td>Ioannina</td>
+<td>480m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>agrinio</td>
+<td>Agrinio</td>
+<td>Agrinio</td>
+<td>25m</td>
+<td>2</td>
+</tr>
+<tr>
+<td>preveza</td>
+<td>Preveza</td>
+<td>Preveza</td>
+<td>5m</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Data Source</p>
+<p>Station metadata and real-time observations are provided by NOA via their <a href="https://stratus.meteo.noa.gr/data/stations/latestValues_Datagems.geojson">DataGEMS GeoJSON Feed</a>.</p>
+</div>
+<h2 id="neighbor-selection-criteria">Neighbor Selection Criteria</h2>
+<h3 id="distance-threshold-100km">Distance Threshold: 100km</h3>
+<p>The system uses a <strong>100km radius</strong> to define neighbors based on:</p>
+<ol>
+<li><strong>Weather Correlation</strong>: Meteorological phenomena typically affect regions within 50-150km</li>
+<li><strong>Station Density</strong>: Balances coverage vs. computational cost</li>
+<li><strong>False Positive Reduction</strong>: Sufficient neighbors for reliable correlation (typically 2-5 per station)</li>
+</ol>
+<h3 id="distance-calculation">Distance Calculation</h3>
+<p>Haversine formula for geographic distance:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-0-1" id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">radians</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">atan2</span>
+<a href="#__codelineno-0-2" id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a href="#__codelineno-0-3" id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">haversine_distance</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">):</span>
+<a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="w">    </span><span class="sd">"""</span>
+<a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="sd">    Calculate distance between two points on Earth.</span>
+<a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="sd">    Returns distance in kilometers.</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="sd">    """</span>
+<a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>    <span class="n">R</span> <span class="o">=</span> <span class="mi">6371</span>  <span class="c1"># Earth's radius in km</span>
+<a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a>
+<a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a>    <span class="n">dlat</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">lat2</span> <span class="o">-</span> <span class="n">lat1</span><span class="p">)</span>
+<a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a>    <span class="n">dlon</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">lon2</span> <span class="o">-</span> <span class="n">lon1</span><span class="p">)</span>
+<a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a>
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="n">a</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">lat1</span><span class="p">))</span> <span class="o">*</span> <span class="n">cos</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">lat2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="n">dlon</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a>    <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">atan2</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">a</span><span class="p">))</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a>    <span class="k">return</span> <span class="n">R</span> <span class="o">*</span> <span class="n">c</span>
+</code></pre></div>
+<h2 id="neighbor-relationships">Neighbor Relationships</h2>
+<h3 id="example-uth_volos-station">Example: uth_volos Station</h3>
+<p><strong>Location</strong>: 39.3636°N, 22.9530°E</p>
+<p><strong>Neighbors</strong> (within 100km):</p>
+<table>
+<thead>
+<tr>
+<th>Neighbor</th>
+<th>Distance</th>
+<th>Direction</th>
+<th>Typical Correlation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>volos</td>
+<td>3.2 km</td>
+<td>SE</td>
+<td>&gt; 0.9 (very high)</td>
+</tr>
+<tr>
+<td>zagora</td>
+<td>28.5 km</td>
+<td>NE</td>
+<td>&gt; 0.7 (high)</td>
+</tr>
+<tr>
+<td>larissa</td>
+<td>62.4 km</td>
+<td>W</td>
+<td>&gt; 0.6 (moderate)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Use Case</strong>:</p>
+<p>When <code>uth_volos</code> shows an anomalous temperature drop:</p>
+<ol>
+<li>Check if <code>volos</code> (3km away) shows the same drop → If yes, likely weather</li>
+<li>Check if <code>zagora</code> and <code>larissa</code> also show drops → Confirms regional weather event</li>
+<li>If only <code>uth_volos</code> is anomalous → Likely device failure</li>
+</ol>
+<h3 id="isolated-stations">Isolated Stations</h3>
+<p>Some stations have <strong>no neighbors within 100km</strong>:</p>
+<ul>
+<li><strong>metsovo</strong>: High altitude, mountainous region</li>
+<li><strong>preveza</strong>: Coastal, isolated location</li>
+</ul>
+<p>For these stations:</p>
+<ul>
+<li>Spatial verification is skipped</li>
+<li>Classification relies solely on temporal detection</li>
+<li>Higher false positive rate expected</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Isolated Station Behavior</p>
+<p>Anomalies at isolated stations are marked as "Suspected" rather than "Device Failure" because spatial verification is unavailable.</p>
+</div>
+<h2 id="network-topology">Network Topology</h2>
+<h3 id="connectivity-graph">Connectivity Graph</h3>
+<pre class="mermaid"><code>graph LR
+    A[uth_volos] --- B[volos]
+    A --- C[zagora]
+    A --- D[larissa]
+
+    B --- C
+    B --- D
+    B --- E[anavra]
+
+    C --- F[pelion]
+
+    D --- G[karditsa]
+    D --- H[domokos]
+    D --- I[trikala]
+
+    I --- J[pyli]
+    I --- K[metsovo]
+
+    K --- L[ioannina]
+
+    L --- M[agrinio]
+
+    M --- N[preveza]</code></pre>
+<h3 id="network-statistics">Network Statistics</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total Stations</td>
+<td>14</td>
+<td>Monitored by NOA</td>
+</tr>
+<tr>
+<td>Total Connections</td>
+<td>28</td>
+<td>Within 100km radius</td>
+</tr>
+<tr>
+<td>Average Neighbors</td>
+<td>4.0</td>
+<td>Per station</td>
+</tr>
+<tr>
+<td>Max Neighbors</td>
+<td>5</td>
+<td>Station: larissa</td>
+</tr>
+<tr>
+<td>Min Neighbors</td>
+<td>0</td>
+<td>Stations: metsovo, preveza</td>
+</tr>
+<tr>
+<td>Network Diameter</td>
+<td>6</td>
+<td>Max hops between any two stations</td>
+</tr>
+<tr>
+<td>Clustering Coefficient</td>
+<td>0.42</td>
+<td>Moderate clustering</td>
+</tr>
+</tbody>
+</table>
+<h2 id="spatial-correlation-patterns">Spatial Correlation Patterns</h2>
+<h3 id="typical-weather-event">Typical Weather Event</h3>
+<p>When a weather front passes through:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-1-1" id="__codelineno-1-1" name="__codelineno-1-1"></a>Station A: Temp 15°C → 10°C (↓5°C)
+<a href="#__codelineno-1-2" id="__codelineno-1-2" name="__codelineno-1-2"></a>Station B: Temp 16°C → 11°C (↓5°C)
+<a href="#__codelineno-1-3" id="__codelineno-1-3" name="__codelineno-1-3"></a>Station C: Temp 14°C → 9°C (↓5°C)
+<a href="#__codelineno-1-4" id="__codelineno-1-4" name="__codelineno-1-4"></a>
+<a href="#__codelineno-1-5" id="__codelineno-1-5" name="__codelineno-1-5"></a>→ Correlation: 0.95 (all drop together)
+<a href="#__codelineno-1-6" id="__codelineno-1-6" name="__codelineno-1-6"></a>→ Classification: Weather Event
+</code></pre></div>
+<h3 id="typical-device-failure">Typical Device Failure</h3>
+<p>When one sensor malfunctions:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-2-1" id="__codelineno-2-1" name="__codelineno-2-1"></a>Station A: Temp 15°C → 99°C (sensor error)
+<a href="#__codelineno-2-2" id="__codelineno-2-2" name="__codelineno-2-2"></a>Station B: Temp 16°C → 16°C (stable)
+<a href="#__codelineno-2-3" id="__codelineno-2-3" name="__codelineno-2-3"></a>Station C: Temp 14°C → 14°C (stable)
+<a href="#__codelineno-2-4" id="__codelineno-2-4" name="__codelineno-2-4"></a>
+<a href="#__codelineno-2-5" id="__codelineno-2-5" name="__codelineno-2-5"></a>→ Correlation: -0.05 (no pattern)
+<a href="#__codelineno-2-6" id="__codelineno-2-6" name="__codelineno-2-6"></a>→ Classification: Device Failure
+</code></pre></div>
+<h3 id="edge-case-local-phenomenon">Edge Case: Local Phenomenon</h3>
+<p>Microclimates can cause legitimate but isolated anomalies:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>Station A (coastal): Temp 20°C → 15°C (sea breeze)
+<a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>Station B (inland): Temp 22°C → 22°C (stable)
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>Station C (inland): Temp 21°C → 21°C (stable)
+<a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>
+<a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>→ Correlation: 0.35 (weak)
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>→ Classification: Suspected (requires manual review)
+</code></pre></div>
+<h2 id="dynamic-neighbor-selection">Dynamic Neighbor Selection</h2>
+<h3 id="current-implementation">Current Implementation</h3>
+<p><strong>Static</strong>: All neighbor relationships are pre-computed based on GPS coordinates.</p>
+<p><strong>Advantage</strong>: Fast lookup, no runtime overhead.</p>
+<h3 id="future-enhancement">Future Enhancement</h3>
+<p><strong>Dynamic</strong>: Adjust neighbor weights based on:</p>
+<ol>
+<li><strong>Historical Correlation</strong>: Stations that historically correlate better get higher weight</li>
+<li><strong>Elevation Similarity</strong>: Stations at similar altitude may correlate better</li>
+<li><strong>Wind Direction</strong>: Use upstream stations when wind data is available</li>
+<li><strong>Seasonal Adjustment</strong>: Different neighbor sets for summer vs. winter</li>
+</ol>
+<p><strong>Pseudocode</strong>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-4-1" id="__codelineno-4-1" name="__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_dynamic_neighbors</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">current_conditions</span><span class="p">):</span>
+<a href="#__codelineno-4-2" id="__codelineno-4-2" name="__codelineno-4-2"></a>    <span class="n">candidates</span> <span class="o">=</span> <span class="n">get_all_neighbors_within_radius</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<a href="#__codelineno-4-3" id="__codelineno-4-3" name="__codelineno-4-3"></a>
+<a href="#__codelineno-4-4" id="__codelineno-4-4" name="__codelineno-4-4"></a>    <span class="c1"># Weight by historical correlation</span>
+<a href="#__codelineno-4-5" id="__codelineno-4-5" name="__codelineno-4-5"></a>    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+<a href="#__codelineno-4-6" id="__codelineno-4-6" name="__codelineno-4-6"></a>        <span class="n">n</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">historical_correlation</span><span class="p">(</span><span class="n">station</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<a href="#__codelineno-4-7" id="__codelineno-4-7" name="__codelineno-4-7"></a>
+<a href="#__codelineno-4-8" id="__codelineno-4-8" name="__codelineno-4-8"></a>    <span class="c1"># Adjust for elevation</span>
+<a href="#__codelineno-4-9" id="__codelineno-4-9" name="__codelineno-4-9"></a>    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+<a href="#__codelineno-4-10" id="__codelineno-4-10" name="__codelineno-4-10"></a>        <span class="n">elev_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">elevation</span> <span class="o">-</span> <span class="n">n</span><span class="o">.</span><span class="n">elevation</span><span class="p">)</span>
+<a href="#__codelineno-4-11" id="__codelineno-4-11" name="__codelineno-4-11"></a>        <span class="k">if</span> <span class="n">elev_diff</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>  <span class="c1"># 500m difference</span>
+<a href="#__codelineno-4-12" id="__codelineno-4-12" name="__codelineno-4-12"></a>            <span class="n">n</span><span class="o">.</span><span class="n">weight</span> <span class="o">*=</span> <span class="mf">0.5</span>  <span class="c1"># Reduce weight</span>
+<a href="#__codelineno-4-13" id="__codelineno-4-13" name="__codelineno-4-13"></a>
+<a href="#__codelineno-4-14" id="__codelineno-4-14" name="__codelineno-4-14"></a>    <span class="c1"># Adjust for wind direction (if available)</span>
+<a href="#__codelineno-4-15" id="__codelineno-4-15" name="__codelineno-4-15"></a>    <span class="k">if</span> <span class="n">current_conditions</span><span class="o">.</span><span class="n">wind_direction</span><span class="p">:</span>
+<a href="#__codelineno-4-16" id="__codelineno-4-16" name="__codelineno-4-16"></a>        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+<a href="#__codelineno-4-17" id="__codelineno-4-17" name="__codelineno-4-17"></a>            <span class="k">if</span> <span class="n">is_upstream</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">current_conditions</span><span class="o">.</span><span class="n">wind_direction</span><span class="p">):</span>
+<a href="#__codelineno-4-18" id="__codelineno-4-18" name="__codelineno-4-18"></a>                <span class="n">n</span><span class="o">.</span><span class="n">weight</span> <span class="o">*=</span> <span class="mf">1.5</span>  <span class="c1"># Increase weight</span>
+<a href="#__codelineno-4-19" id="__codelineno-4-19" name="__codelineno-4-19"></a>
+<a href="#__codelineno-4-20" id="__codelineno-4-20" name="__codelineno-4-20"></a>    <span class="c1"># Return top N weighted neighbors</span>
+<a href="#__codelineno-4-21" id="__codelineno-4-21" name="__codelineno-4-21"></a>    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+</code></pre></div>
+<h2 id="map-generation">Map Generation</h2>
+<p>The interactive map is generated using the <code>generate_map.py</code> script:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-5-1" id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="c1"># Generate or update the station network map</span>
+<a href="#__codelineno-5-2" id="__codelineno-5-2" name="__codelineno-5-2"></a>python<span class="w"> </span>generate_map.py
+</code></pre></div>
+<p><strong>Output</strong>: <code>spatial_network_map.html</code></p>
+<p><strong>Technology</strong>: <a href="https://python-visualization.github.io/folium/">Folium</a> - Python wrapper for Leaflet.js</p>
+<p><strong>Data Source</strong>: Station GPS coordinates from NOA API</p>
+<h3 id="customization">Customization</h3>
+<p>Edit the map generation parameters in <code>generate_map.py</code>:</p>
+<div class="highlight"><pre><span></span><code><a href="#__codelineno-6-1" id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># Configuration</span>
+<a href="#__codelineno-6-2" id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="n">NEIGHBOR_RADIUS_KM</span> <span class="o">=</span> <span class="mi">100</span>
+<a href="#__codelineno-6-3" id="__codelineno-6-3" name="__codelineno-6-3"></a><span class="n">MAP_CENTER</span> <span class="o">=</span> <span class="p">[</span><span class="mf">39.0</span><span class="p">,</span> <span class="mf">22.0</span><span class="p">]</span>  <span class="c1"># Central Greece</span>
+<a href="#__codelineno-6-4" id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="n">MAP_ZOOM</span> <span class="o">=</span> <span class="mi">8</span>
+<a href="#__codelineno-6-5" id="__codelineno-6-5" name="__codelineno-6-5"></a><span class="n">LINE_COLOR</span> <span class="o">=</span> <span class="s1">'red'</span>
+<a href="#__codelineno-6-6" id="__codelineno-6-6" name="__codelineno-6-6"></a><span class="n">LINE_WEIGHT</span> <span class="o">=</span> <span class="mi">2</span>
+<a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a><span class="n">MARKER_COLOR</span> <span class="o">=</span> <span class="s1">'blue'</span>
+</code></pre></div>
+</article>
+</div>
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+</div>
+<button class="md-top md-icon" data-md-component="top" hidden="" type="button">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+</main>
+<footer class="md-footer">
+<div class="md-footer-meta md-typeset">
+<div class="md-footer-meta__inner md-grid">
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      DataGEMS is a Research and Innovation Action funded by the European Union  under the Horizon Europe Research and Innovation Programme via Grant Agreement No 101188416.
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
+</div>
+<div class="md-social">
+<a class="md-social__link" href="https://github.com/datagems-eosc" rel="noopener" target="_blank" title="github.com">
+<svg viewbox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"></path></svg>
+</a>
+</div>
+</div>
+</div>
+</footer>
+</div>
+<div class="md-dialog" data-md-component="dialog">
+<div class="md-dialog__inner md-typeset"></div>
+</div>
+<script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+<script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+</body>
+</html>
