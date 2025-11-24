@@ -4,6 +4,8 @@ Real-time monitoring and anomaly detection for 14 meteorological stations from t
 
 > **Note**: This system now uses a **Dual-Verification Strategy** (Temporal + Spatial) to distinguish between device failures and extreme weather events.
 
+📖 **[View Full Documentation](https://datagems-eosc.github.io/real-time-anomaly-detection/)** | 🌐 **[GitHub Repository](https://github.com/datagems-eosc/real-time-anomaly-detection)**
+
 ---
 
 ## 🧠 Core Logic: Time-Space Dual Verification
@@ -252,15 +254,4 @@ stream_detection/
 └── README.md                      # Documentation
 ```
 
----
 
-## 🔍 Troubleshooting
-
-**Q: Why does MAD report so many anomalies?**
-A: MAD is very sensitive to small deviations in stable weather. Use **ARIMA** for better trend handling.
-
-**Q: What does "Trend Skipped: no_neighbors" mean?**
-A: The station is geographically isolated (no neighbors within 100km). Spatial verification cannot be performed, so the result relies solely on temporal detection.
-
-**Q: How to check neighbors' data manually?**
-A: The console output automatically prints a data table for the target station and its neighbors when an anomaly is detected.
