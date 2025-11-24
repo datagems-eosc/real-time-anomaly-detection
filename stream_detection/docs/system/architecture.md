@@ -285,9 +285,9 @@ Creates interactive HTML maps using Folium:
 - Neighbor connections (red lines)
 - Metadata tooltips
 
-## Deployment Patterns
+## Deployment Pattern
 
-### Pattern 1: Standalone Server
+### Standalone Server
 
 ```
 ┌─────────────────────────┐
@@ -304,44 +304,12 @@ Creates interactive HTML maps using Folium:
 │          ↓              │
 │  ┌─────────────────┐   │
 │  │ Detector        │   │
-│  │ (Cron: Hourly)  │   │
+│  │ (On-demand)     │   │
 │  └─────────────────┘   │
 └─────────────────────────┘
 ```
 
-**Use Case**: Small deployments (< 50 stations)
-
-### Pattern 2: Distributed System
-
-```
-┌──────────────┐    ┌──────────────┐
-│ Collector 1  │    │ Collector 2  │
-└──────────────┘    └──────────────┘
-        ↓                   ↓
-    ┌────────────────────────────┐
-    │   TimescaleDB Cluster      │
-    └────────────────────────────┘
-                ↓
-    ┌────────────────────────────┐
-    │   Detection Workers        │
-    │   (Load Balanced)          │
-    └────────────────────────────┘
-                ↓
-    ┌────────────────────────────┐
-    │   Monitoring Dashboard     │
-    └────────────────────────────┘
-```
-
-**Use Case**: Enterprise deployments (100+ stations)
-
-## Scalability Characteristics
-
-| Component | Bottleneck | Scaling Strategy |
-|-----------|------------|------------------|
-| Collector | API rate limits | Multiple collectors with different regions |
-| Database | Write throughput | Switch to TimescaleDB + connection pooling |
-| Detector | CPU for ARIMA | Parallel processing per station |
-| Network | Station count | Spatial indexing (KD-tree) for neighbor queries |
+**Use Case**: Current implementation for NOA meteorological stations
 
 ## Security Considerations
 
@@ -373,15 +341,6 @@ Monitor these indicators:
 - Consecutive failure count
 - Network latency to API
 - Database write latency
-
-### Detection Health
-
-Monitor these indicators:
-
-- Detection execution time
-- Memory usage trend
-- False positive rate
-- Classification distribution
 
 Example health check:
 
