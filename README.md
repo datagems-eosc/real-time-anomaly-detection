@@ -160,7 +160,6 @@ Used in **Step 1** to detect if a single station is behaving abnormally compared
 | :--- | :--- | :--- |
 | **`arima`** | AutoRegressive Integrated Moving Average | **Complex Trends** (Weather, Stocks). Best overall accuracy. |
 | **`3sigma`** | 3-Sigma Rule (Z-Score) | **Extreme Outliers**. Simple and fast, assuming normal distribution. |
-| **`mad`** | Median Absolute Deviation | **Robustness**. Ignores outliers better than 3sigma, but sensitive to flat lines. |
 | **`iqr`** | Interquartile Range | **Boxplot Logic**. Good for exploratory analysis. |
 | **`isolation_forest`** | Isolation Forest (ML) | **Multidimensional**. Can find subtle anomalies in high-dimensional space. |
 | **`stl`** | Seasonal-Trend Decomposition | **Seasonality**. If data has strong daily/weekly cycles. |
@@ -194,7 +193,7 @@ python anomaly_detector.py --end "TIMESTAMP" --window HOURS --temporal-method ME
 python anomaly_detector.py \
   --end "2025-11-22 17:00:00" \
   --window 6 \
-  --temporal-method arima \
+  --temporal-method 3sigma \
   --spatial-verify
 ```
 
@@ -208,7 +207,7 @@ python anomaly_detector.py \
 
 ---
 
-### 2. Long-Term Sensor Health Check (Days/Weeks) 🆕
+### 2. Long-Term Sensor Health Check (Days/Weeks) 
 
 For detecting chronic sensor problems like stalled wind sensors or excessive data loss over extended time periods.
 
@@ -219,14 +218,8 @@ python anomaly_detector.py --health-check --days DAYS [--station STATION_ID] [--
 
 **Example Commands**:
 ```bash
-# Check all stations for the last 30 days
-python anomaly_detector.py --health-check --days 30
-
 # Check specific problem station for the last 7 days
-python anomaly_detector.py --health-check --days 7 --station grevena
-
-# Check last week's data quality and save JSON report
-python anomaly_detector.py --health-check --days 7 --save health_report.json
+python anomaly_detector.py --health-check --days 7 --station grevena --save health_report.json
 ```
 
 | Argument | Description | Recommended Value |
@@ -237,10 +230,10 @@ python anomaly_detector.py --health-check --days 7 --save health_report.json
 | `--save` | Save detailed JSON report | Optional (e.g., `health_report.json`) |
 
 **What it Detects**:
-- 🔴 **Stalled wind sensors**: >30% zero values in wind_speed (e.g., sensor physically stuck)
-- 🔴 **High data loss**: >50% missing observations (e.g., communication failures)
-- 🔴 **Stuck sensors**: Abnormally low variance (< 0.1, sensor not responding to changes)
-- 📊 **Data completeness**: Tracks percentage of expected observations received
+- **Stalled wind sensors**: >30% zero values in wind_speed (e.g., sensor physically stuck)
+- **High data loss**: >50% missing observations (e.g., communication failures)
+- **Stuck sensors**: Abnormally low variance (< 0.1, sensor not responding to changes)
+- **Data completeness**: Tracks percentage of expected observations received
 
 **Example Console Output**:
 ```text
@@ -256,12 +249,10 @@ grevena              🔴 CRITICAL  58.0%           1 problems
   └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
 heraclion            ✅ HEALTHY   57.9%           0 problems
 kolympari            ✅ HEALTHY   56.1%           0 problems
-makrinitsa           ✅ HEALTHY   52.7%           0 problems
-portaria             ✅ HEALTHY   57.9%           0 problems
 ...
 --------------------------------------------------------------------------------
 
-✅ Report exported to: health_report_20251124_233705.json
+Report exported to: health_report_20251124_233705.json
 ```
 
 **JSON Report Structure**:
@@ -337,7 +328,6 @@ Shows exactly *why* a station was flagged.
 ## 📁 Project Structure
 
 ```text
-stream_detection/
 ├── anomaly_detector.py            # [CORE] Detection engine (Short-term + Long-term health check)
 ├── streaming_collector_sqlite.py  # [CORE] Real-time data collector (daemon)
 ├── generate_map.py                # [TOOL] Generate station network visualization
@@ -350,13 +340,7 @@ stream_detection/
 ├── requirements.txt               # Python dependencies
 ├── docs_requirements.txt          # Documentation dependencies (MkDocs)
 ├── mkdocs.yml                     # Documentation configuration
-├── docs/                          # Documentation source files
-│   ├── index.md                   # Documentation home page
-│   ├── api/                       # API documentation
-│   ├── examples/                  # Detection examples
-│   ├── setup/                     # Installation & deployment guides
-│   ├── system/                    # Architecture & technical details
-│   └── images/                    # Documentation assets
+├── stream_detection/docs/         # Documentation source files
 │
 └── README.md                      # Project overview (this file)
 ```
@@ -367,7 +351,6 @@ stream_detection/
 - ✅ **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
 - ✅ **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
 - ✅ **JSON Export**: Machine-readable reports for integration with monitoring systems
-- ✅ **Professional Documentation**: [https://datagems-eosc.github.io/real-time-anomaly-detection/](https://datagems-eosc.github.io/real-time-anomaly-detection/)
 ```
 
 
