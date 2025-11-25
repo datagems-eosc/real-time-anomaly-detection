@@ -15,7 +15,7 @@ This system uses a two-step verification process to minimize false alarms.
 ```mermaid
 flowchart TD
     A[Start Detection] --> B{1. Temporal Check}
-    B -- Normal --> C[✅ Ignore]
+    B -- Normal --> C[✅ safe]
     B -- Anomalous? --> D{2. Spatial Check}
     D -- Trend Matches Neighbors --> E[🌧️ Weather Event]
     D -- Trend Contradicts Neighbors --> F[🔴 Device Failure]
@@ -351,6 +351,5 @@ Shows exactly *why* a station was flagged.
 - ✅ **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
 - ✅ **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
 - ✅ **JSON Export**: Machine-readable reports for integration with monitoring systems
-```
 
 
