@@ -287,13 +287,13 @@ python anomaly_detector.py --health-check --days 7 --station grevena --save heal
 Period: Last 7 days
 Station              Status       Completeness    Issues
 --------------------------------------------------------------------------------
-amfissa              ✅ HEALTHY   57.4%           0 problems
-dodoni               ✅ HEALTHY   57.6%           0 problems
-embonas              ✅ HEALTHY   58.0%           0 problems
-grevena              🔴 CRITICAL  58.0%           1 problems
+amfissa               HEALTHY   57.4%           0 problems
+dodoni                HEALTHY   57.6%           0 problems
+embonas               HEALTHY   58.0%           0 problems
+grevena            🔴 CRITICAL  58.0%           1 problems
   └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
-heraclion            ✅ HEALTHY   57.9%           0 problems
-kolympari            ✅ HEALTHY   56.1%           0 problems
+heraclion             HEALTHY   57.9%           0 problems
+kolympari             HEALTHY   56.1%           0 problems
 ...
 --------------------------------------------------------------------------------
 
@@ -391,10 +391,10 @@ Shows exactly *why* a station was flagged.
 ```
 
 **Core Capabilities**:
-- ✅ **Short-term Detection**: Real-time anomaly detection (hours) with time-space dual verification
-- ✅ **Long-term Health Check**: Sensor health monitoring (days/weeks) - detects stalled sensors, data loss, and degradation 🆕
-- ✅ **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
-- ✅ **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
-- ✅ **JSON Export**: Machine-readable reports for integration with monitoring systems
+-  **Short-term Detection**: Real-time anomaly detection (hours) with time-space dual verification
+-  **Long-term Health Check**: Sensor health monitoring (days/weeks) - detects stalled sensors, data loss, and degradation 🆕
+-  **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
+-  **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
+-  **JSON Export**: Machine-readable reports for integration with monitoring systems
 
 
