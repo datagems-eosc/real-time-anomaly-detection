@@ -199,11 +199,64 @@ python anomaly_detector.py \
 
 | Argument | Description | Recommended Value |
 | :--- | :--- | :--- |
-| `--end` | The target timestamp to detect | `"NOW"` or specific time (e.g., `"2025-11-22 17:00:00"`) |
+| `--end` | The target timestamp to detect | Specific time (e.g., `"2025-11-22 17:00:00"`) |
 | `--window` | Length of historical data to analyze (hours) | `6` |
 | `--temporal-method` | Algorithm for Step 1 (Temporal) | `arima` (best) or `3sigma` |
 | `--spatial-verify` | **Enable Step 2 (Spatial Verification)** | Always include this flag |
 | `--save` | Save report to JSON file | Optional |
+
+**Example Detection Run**:
+
+```bash
+python anomaly_detector.py --end "2025-11-23 09:00:00" --window 6 --temporal-method 3sigma --spatial-verify
+```
+
+**Example Output**:
+
+```
+🔌 Connected to SQLite: weather_stream.db
+ANOMALY DETECTION REPORT
+Date: 2025-11-25 00:25:36
+Window: Last 6h from 2025-11-23 09:00:00
+--------------------------------------------------
+Total: 14 | Anomalous: 4
+--------------------------------------------------
+[Station: dodoni]
+  ⚠️  wind_speed: 1 anomalies
+    • 2025-11-23 05:40:00: 11.3 -> 🔴 Device Failure (Trend Inconsistent (Corr: -0.17))
+
+    📊 DETAILED DIAGNOSIS - Device Failure at dodoni
+    Variable: wind_speed | Window: Last 6h from 2025-11-23 09:00:00
+    ======================================================================
+    Time                 |       dodoni |      grevena |
+    ----------------------------------------------------------------------
+    2025-11-23 05:40     |        11.30 |         0.00 |
+    2025-11-23 06:00     |         3.20 |         0.00 |
+    2025-11-23 07:00     |         3.20 |         0.00 |
+    2025-11-23 08:00     |         0.00 |         1.60 |
+    2025-11-23 09:00     |         3.20 |         1.60 |
+    ======================================================================
+    💡 Analysis: Station dodoni shows trend inconsistent with 1 neighbors
+    Correlation: -0.17 (< 0.3 indicates likely sensor failure)
+
+
+[Station: makrinitsa]
+  ⚠️  temp_out: 1 anomalies
+    • 2025-11-23 09:00:00: 11.9 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.77))
+
+[Station: uth_volos]
+  ⚠️  wind_speed: 1 anomalies
+    • 2025-11-23 09:00:00: 19.3 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.75))
+
+[Station: volos-port]
+  ⚠️  wind_speed: 1 anomalies
+    • 2025-11-23 09:00:00: 25.7 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.70))
+```
+
+**Key Observations**:
+- ✅ **Weather Events**: `makrinitsa`, `uth_volos`, and `volos-port` showed high correlation (>0.7) with neighbors → Normal extreme weather
+- 🔴 **Device Failure**: `dodoni` showed negative correlation (-0.17) → Sensor malfunction detected
+- 📊 **Detailed Diagnosis**: For device failures, the system displays a comparison table with neighboring stations to visualize the inconsistency
 
 ---
 
