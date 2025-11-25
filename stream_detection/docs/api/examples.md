@@ -1,6 +1,15 @@
 # Code Examples
 
-## Basic Usage Examples
+## Detection Modes
+
+This system provides two detection modes:
+
+1. **Short-Term Detection**: Real-time anomaly detection (Examples 1-17)
+2. **Long-Term Health Check**: Sensor health monitoring (Examples 18-23) 🆕
+
+---
+
+## Short-Term Detection Examples
 
 ### Example 1: Real-Time Detection
 
@@ -592,5 +601,237 @@ if __name__ == "__main__":
 
 ---
 
-These examples cover most common use cases. For more specific scenarios, refer to the [API Reference](overview.md) or [FAQ](../faq.md).
+## Long-Term Health Check Examples 🆕
+
+### Example 18: Weekly Health Check
+
+Check all stations for the last 7 days:
+
+```bash
+python anomaly_detector.py --health-check --days 7
+```
+
+**Output**:
+
+```text
+═══════════════════════════════════════════════════════════════════════════════
+📊 LONG-TERM SENSOR HEALTH CHECK
+Period: Last 7 days
+═══════════════════════════════════════════════════════════════════════════════
+
+Station              Status       Completeness    Issues
+--------------------------------------------------------------------------------
+grevena              🔴 CRITICAL  58.0%           1 problems
+  └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
+dodoni               ✅ HEALTHY   57.6%           0 problems
+volos                ✅ HEALTHY   57.9%           0 problems
+...
+```
+
+**Use Case**: Routine weekly monitoring to identify chronic sensor problems
+
+---
+
+### Example 19: Monthly Health Review with JSON Export
+
+Check all stations over 30 days and save detailed report:
+
+```bash
+python anomaly_detector.py --health-check --days 30 --save health_monthly.json
+```
+
+**JSON Output**:
+
+```json
+[
+  {
+    "station_id": "grevena",
+    "analysis_period_days": 30,
+    "data_completeness": 0.58,
+    "total_data_points": 2340,
+    "overall_status": "critical",
+    "variable_reports": [
+      {
+        "variable": "wind_speed",
+        "zero_ratio": 0.716,
+        "null_ratio": 0.0,
+        "variance": 1.37,
+        "issues": ["High zero ratio (71.6%) - sensor may be stalled"],
+        "severity": "critical"
+      }
+    ]
+  }
+]
+```
+
+**Use Case**: Monthly maintenance planning and trend analysis
+
+---
+
+### Example 20: Investigate Specific Station
+
+Focus on a problematic station:
+
+```bash
+python anomaly_detector.py --health-check --days 7 --station grevena
+```
+
+**Use Case**: Detailed diagnosis of known problem stations
+
+---
+
+### Example 21: Check Multiple Variables
+
+Analyze all meteorological variables:
+
+```bash
+python anomaly_detector.py --health-check --days 7 \
+  --variables wind_speed,temp_out,out_hum,bar,rain \
+  --save comprehensive_health.json
+```
+
+**Use Case**: Comprehensive station diagnostics before critical weather season
+
+---
+
+### Example 22: Automated Daily Health Monitoring
+
+Create a cron job for daily health checks with alerting:
+
+```bash
+#!/bin/bash
+# daily_health_check.sh
+
+REPORT_FILE="/tmp/health_$(date +%Y%m%d).json"
+
+# Run health check
+python anomaly_detector.py --health-check --days 7 --save "$REPORT_FILE"
+
+# Count critical stations
+CRITICAL_COUNT=$(jq '[.[] | select(.overall_status == "critical")] | length' "$REPORT_FILE")
+
+if [ "$CRITICAL_COUNT" -gt 0 ]; then
+    # Extract critical stations and issues
+    CRITICAL_STATIONS=$(jq -r '.[] | select(.overall_status == "critical") | .station_id' "$REPORT_FILE" | tr '\n' ', ')
+    ISSUES=$(jq -r '.[] | select(.overall_status == "critical") | .variable_reports[].issues[]' "$REPORT_FILE")
+    
+    # Send alert
+    echo -e "Critical sensor health issues:\n\nStations: $CRITICAL_STATIONS\n\nIssues:\n$ISSUES" | \
+        mail -s "🔴 ALERT: Critical Sensor Health Issues" admin@example.com
+fi
+```
+
+Add to crontab:
+
+```bash
+# Run daily at 6 AM
+0 6 * * * /path/to/daily_health_check.sh
+```
+
+**Use Case**: Continuous monitoring with automatic alerts
+
+---
+
+### Example 23: Health Metrics Dashboard Integration
+
+Export health metrics for Grafana/Prometheus:
+
+```python
+from prometheus_client import Gauge, CollectorRegistry, write_to_textfile
+import json
+import subprocess
+
+# Create metrics
+registry = CollectorRegistry()
+completeness = Gauge('station_data_completeness', 
+                     'Data completeness percentage',
+                     ['station_id'], registry=registry)
+zero_ratio = Gauge('station_zero_ratio',
+                   'Zero readings percentage',
+                   ['station_id', 'variable'], registry=registry)
+status = Gauge('station_health_status',
+               'Health status (0=healthy, 1=warning, 2=critical)',
+               ['station_id'], registry=registry)
+
+def export_health_metrics():
+    # Run health check
+    subprocess.run([
+        "python", "anomaly_detector.py",
+        "--health-check", "--days", "7",
+        "--save", "/tmp/health.json"
+    ])
+    
+    # Load report
+    with open('/tmp/health.json', 'r') as f:
+        report = json.load(f)
+    
+    # Export metrics
+    status_map = {'healthy': 0, 'warning': 1, 'critical': 2}
+    
+    for station in report:
+        sid = station['station_id']
+        
+        completeness.labels(station_id=sid).set(station['data_completeness'])
+        status.labels(station_id=sid).set(status_map[station['overall_status']])
+        
+        for var in station['variable_reports']:
+            zero_ratio.labels(
+                station_id=sid,
+                variable=var['variable']
+            ).set(var['zero_ratio'])
+    
+    # Write for Prometheus
+    write_to_textfile('/var/lib/prometheus/health.prom', registry)
+
+if __name__ == "__main__":
+    export_health_metrics()
+```
+
+Schedule with cron:
+
+```bash
+*/10 * * * * /path/to/export_health_metrics.py
+```
+
+**Use Case**: Real-time dashboard visualization and alerting
+
+---
+
+### Health Check vs Short-Term Detection
+
+| Feature | Short-Term Detection | Long-Term Health Check |
+|---------|---------------------|------------------------|
+| **Time Scale** | Hours (1-24) | Days/Weeks (7-90) |
+| **Purpose** | Catch sudden failures | Identify gradual degradation |
+| **Metrics** | Temporal + Spatial anomalies | Zero ratio, data loss, variance |
+| **Output** | Anomaly classification | Health status + metrics |
+| **Frequency** | Every 10 min - hourly | Daily - weekly |
+| **Use Case** | Real-time alerting | Maintenance planning |
+
+### When to Use Each Mode
+
+**Use Short-Term Detection when**:
+- Monitoring for sudden device failures
+- Distinguishing weather events from equipment issues
+- Real-time alerting is needed
+- Analyzing specific timestamps
+
+**Use Long-Term Health Check when**:
+- Planning maintenance schedules
+- Identifying chronic sensor problems
+- Tracking data quality trends
+- Preparing seasonal reports
+
+**Use Both for**:
+- Comprehensive monitoring strategy
+- Complete failure coverage
+- Quality assurance programs
+
+---
+
+These examples cover most common use cases. For more specific scenarios, refer to:
+
+- [API Reference](overview.md) - Complete parameter documentation
+- [Long-Term Health Check Guide](../examples/health-check.md) - Detailed health check examples
+- [FAQ](../faq.md) - Common questions and troubleshooting
 

@@ -74,9 +74,13 @@ The system follows a **Pull-Based Streaming Architecture**:
     *   Parses and saves data into the local `weather_stream.db`.
 
 2.  **Detect (`anomaly_detector.py`)**:
+    *   **Short-term Detection**: Uses a **Sliding Window** (e.g., last 6 hours) for real-time anomaly detection using temporal + spatial dual-verification
+    *   **Long-term Health Check** (🆕 NEW): Analyzes sensor health over days/weeks to detect chronic issues:
+        - 🔴 **Stalled sensors**: Wind speed stuck at zero (>30% zero readings)
+        - 🔴 **Failed sensors**: Excessive missing data (>50% data loss)
+        - 🔴 **Degraded sensors**: Abnormally low variance (<0.1)
+        - 📊 **Data completeness tracking**: Monitors overall data quality per station
     *   Triggered on-demand or via cron/scheduler.
-    *   Uses a **Sliding Window** mechanism to fetch only relevant history (e.g., last 6 hours).
-    *   **Why Sliding Window?** It ensures constant memory usage (O(1)) regardless of database size and provides real-time responsiveness.
 
 ### 2. Database Schema
 Data is stored in a single optimized SQLite table `observations`.
@@ -176,7 +180,9 @@ Used in **Step 2** to verify if the anomaly is isolated or widespread.
 
 ## 🚀 Usage Guide
 
-### 1. Command Input
+### 1. Short-Term Anomaly Detection (Hours)
+
+For real-time detection of sudden anomalies in the last few hours.
 
 **Basic Syntax**:
 ```bash
@@ -202,9 +208,114 @@ python anomaly_detector.py \
 
 ---
 
-### 2. Output Explanation
+### 2. Long-Term Sensor Health Check (Days/Weeks) 🆕
 
-The system prints a human-readable report to the console.
+For detecting chronic sensor problems like stalled wind sensors or excessive data loss over extended time periods.
+
+**Basic Syntax**:
+```bash
+python anomaly_detector.py --health-check --days DAYS [--station STATION_ID] [--save FILENAME]
+```
+
+**Example Commands**:
+```bash
+# Check all stations for the last 30 days
+python anomaly_detector.py --health-check --days 30
+
+# Check specific problem station for the last 7 days
+python anomaly_detector.py --health-check --days 7 --station grevena
+
+# Check last week's data quality and save JSON report
+python anomaly_detector.py --health-check --days 7 --save health_report.json
+```
+
+| Argument | Description | Recommended Value |
+| :--- | :--- | :--- |
+| `--health-check` | Enable long-term health check mode | Required flag |
+| `--days` | Number of days to analyze | `7` (weekly), `30` (monthly) |
+| `--station` | Check specific station only | Optional (default: all stations) |
+| `--save` | Save detailed JSON report | Optional (e.g., `health_report.json`) |
+
+**What it Detects**:
+- 🔴 **Stalled wind sensors**: >30% zero values in wind_speed (e.g., sensor physically stuck)
+- 🔴 **High data loss**: >50% missing observations (e.g., communication failures)
+- 🔴 **Stuck sensors**: Abnormally low variance (< 0.1, sensor not responding to changes)
+- 📊 **Data completeness**: Tracks percentage of expected observations received
+
+**Example Console Output**:
+```text
+═══════════════════════════════════════════════════════════════════════════════
+📊 LONG-TERM SENSOR HEALTH CHECK
+Period: Last 7 days
+═══════════════════════════════════════════════════════════════════════════════
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 SUMMARY
+═══════════════════════════════════════════════════════════════════════════════
+
+Station              Status       Completeness    Issues
+--------------------------------------------------------------------------------
+amfissa              ✅ HEALTHY   57.4%           0 problems
+dodoni               ✅ HEALTHY   57.6%           0 problems
+embonas              ✅ HEALTHY   58.0%           0 problems
+grevena              🔴 CRITICAL  58.0%           1 problems
+  └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
+heraclion            ✅ HEALTHY   57.9%           0 problems
+kolympari            ✅ HEALTHY   56.1%           0 problems
+makrinitsa           ✅ HEALTHY   52.7%           0 problems
+portaria             ✅ HEALTHY   57.9%           0 problems
+sparti               ✅ HEALTHY   57.6%           0 problems
+uth_volos            ✅ HEALTHY   54.9%           0 problems
+vlasti               ✅ HEALTHY   55.1%           0 problems
+volos                ✅ HEALTHY   57.9%           0 problems
+volos-port           ✅ HEALTHY   58.0%           0 problems
+zagora               ✅ HEALTHY   45.3%           0 problems
+--------------------------------------------------------------------------------
+
+✅ Report exported to: health_report_20251124_233705.json
+```
+
+**JSON Report Structure**:
+The system exports detailed machine-readable reports in JSON format:
+
+```json
+{
+  "station_id": "grevena",
+  "analysis_period_days": 7,
+  "data_completeness": 0.58,
+  "total_data_points": 585,
+  "overall_status": "critical",
+  "variable_reports": [
+    {
+      "variable": "wind_speed",
+      "zero_ratio": 0.716,
+      "null_ratio": 0.0,
+      "variance": 1.37,
+      "issues": ["High zero ratio (71.6%) - sensor may be stalled"],
+      "severity": "critical"
+    }
+  ]
+}
+```
+
+**JSON Fields Explained**:
+- `station_id`: Station identifier
+- `analysis_period_days`: Time window analyzed (7 or 30 days)
+- `data_completeness`: Percentage of expected data received (0.58 = 58%)
+- `total_data_points`: Actual number of observations collected
+- `overall_status`: "healthy", "warning", or "critical"
+- `variable_reports`: Array of metrics per monitored variable
+  - `zero_ratio`: Proportion of zero values (0.716 = 71.6%)
+  - `null_ratio`: Proportion of missing values
+  - `variance`: Statistical variance (low values indicate stuck sensors)
+  - `issues`: Human-readable problem descriptions
+  - `severity`: Problem level for this variable
+
+---
+
+### 3. Output Explanation (Short-Term Detection)
+
+The system prints a human-readable report to the console for short-term anomaly detection.
 
 #### A. Summary Section
 Quickly see if any *real* action is needed.
@@ -244,14 +355,36 @@ Shows exactly *why* a station was flagged.
 
 ```text
 stream_detection/
-├── anomaly_detector.py            # [CORE] Main detection engine (Temporal + Spatial)
-├── streaming_collector_sqlite.py  # [CORE] Real-time data collector
-├── weather_stream.db              # [DATA] SQLite database storing all history
-├── manage_collector.sh            # [OPS] Service management script (start/stop)
+├── anomaly_detector.py            # [CORE] Detection engine (Short-term + Long-term health check)
+├── streaming_collector_sqlite.py  # [CORE] Real-time data collector (daemon)
+├── generate_map.py                # [TOOL] Generate station network visualization
+├── view_data.py                   # [TOOL] Query and export database data
+├── manage_collector.sh            # [OPS] Collector service management (start/stop/status)
 │
-├── view_data.py                   # [TOOL] Query and export DB data
-├── spatial_network_map.html       # [VISUALIZATION] Station network map
-└── README.md                      # Documentation
+├── weather_stream.db              # [DATA] SQLite database (time-series observations)
+├── spatial_network_map.html       # [OUTPUT] Interactive station network map
+│
+├── requirements.txt               # Python dependencies
+├── docs_requirements.txt          # Documentation dependencies (MkDocs)
+├── mkdocs.yml                     # Documentation configuration
+├── docs/                          # Documentation source files
+│   ├── index.md                   # Documentation home page
+│   ├── api/                       # API documentation
+│   ├── examples/                  # Detection examples
+│   ├── setup/                     # Installation & deployment guides
+│   ├── system/                    # Architecture & technical details
+│   └── images/                    # Documentation assets
+│
+└── README.md                      # Project overview (this file)
+```
+
+**Core Capabilities**:
+- ✅ **Short-term Detection**: Real-time anomaly detection (hours) with time-space dual verification
+- ✅ **Long-term Health Check**: Sensor health monitoring (days/weeks) - detects stalled sensors, data loss, and degradation 🆕
+- ✅ **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
+- ✅ **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
+- ✅ **JSON Export**: Machine-readable reports for integration with monitoring systems
+- ✅ **Professional Documentation**: [https://datagems-eosc.github.io/real-time-anomaly-detection/](https://datagems-eosc.github.io/real-time-anomaly-detection/)
 ```
 
 

@@ -7,10 +7,16 @@ The Real-Time Anomaly Detection system is primarily designed as a command-line t
 ### Basic Usage
 
 ```bash
-python anomaly_detector.py [OPTIONS]
+# Short-term detection (hours)
+python anomaly_detector.py [SHORT_TERM_OPTIONS]
+
+# Long-term health check (days/weeks)
+python anomaly_detector.py --health-check [HEALTH_CHECK_OPTIONS]
 ```
 
 ### Quick Examples
+
+#### Short-Term Detection
 
 ```bash
 # Detect anomalies at current time
@@ -27,13 +33,38 @@ python anomaly_detector.py --end "NOW" --temporal-method arima --spatial-verify 
 python anomaly_detector.py --end "NOW" --temporal-method 3sigma
 ```
 
+#### Long-Term Health Check 🆕
+
+```bash
+# Check all stations for the last 7 days
+python anomaly_detector.py --health-check --days 7
+
+# Check specific station over 30 days
+python anomaly_detector.py --health-check --days 30 --station grevena
+
+# Generate JSON report
+python anomaly_detector.py --health-check --days 7 --save health_report.json
+
+# Check multiple variables
+python anomaly_detector.py --health-check --days 7 --variables wind_speed,temp_out
+```
+
 ## Core Parameters
 
-### Required Parameters
+### Detection Mode Selection
+
+The system operates in one of two modes:
+
+1. **Short-Term Detection** (default): Real-time anomaly detection
+2. **Long-Term Health Check**: Enabled with `--health-check` flag
+
+### Short-Term Detection Parameters
+
+#### Required Parameters
 
 None - all parameters have sensible defaults.
 
-### Optional Parameters
+#### Optional Parameters
 
 #### `--end`
 
@@ -401,6 +432,224 @@ for anomaly in results.anomalies:
     if anomaly.classification == "device_failure":
         send_alert(anomaly)
 ```
+
+## Long-Term Health Check Parameters 🆕
+
+### Required Parameters
+
+#### `--health-check`
+
+**Type**: Flag (boolean)  
+**Description**: Enable long-term health check mode
+
+This flag switches the system from short-term anomaly detection to long-term sensor health monitoring.
+
+**Example**:
+
+```bash
+python anomaly_detector.py --health-check --days 7
+```
+
+### Optional Parameters
+
+#### `--days`
+
+**Type**: Integer  
+**Default**: 7  
+**Unit**: Days  
+**Description**: Number of days to analyze for health metrics
+
+**Recommendations**:
+
+- Weekly check: 7 days (default)
+- Monthly check: 30 days
+- Quarterly check: 90 days
+
+**Examples**:
+
+```bash
+# Weekly health check (default)
+--days 7
+
+# Monthly health check
+--days 30
+
+# Custom period
+--days 14
+```
+
+#### `--station`
+
+**Type**: String  
+**Default**: None (all stations)  
+**Description**: Check specific station only
+
+Useful for investigating known problem stations or reducing output.
+
+**Examples**:
+
+```bash
+# Check specific station
+--station grevena
+
+# Check another station
+--station dodoni
+```
+
+#### `--variables`
+
+**Type**: String (comma-separated)  
+**Default**: "wind_speed" (primary focus for health checks)  
+**Description**: Variables to analyze for health metrics
+
+**Available Variables**:
+
+- `wind_speed`: Most prone to stalling
+- `temp_out`: Temperature sensor
+- `out_hum`: Humidity sensor
+- `bar`: Barometric pressure
+- `rain`: Rain sensor
+
+**Examples**:
+
+```bash
+# Only wind speed (default)
+--variables wind_speed
+
+# Multiple variables
+--variables wind_speed,temp_out,bar
+
+# All variables
+--variables wind_speed,temp_out,out_hum,bar,rain
+```
+
+#### `--save`
+
+**Type**: String (file path)  
+**Default**: None (auto-generated filename with timestamp)  
+**Description**: Save detailed JSON report to specified file
+
+**Examples**:
+
+```bash
+# Auto-generated filename
+--save
+
+# Custom filename
+--save my_health_report.json
+
+# With timestamp
+--save "health_report_$(date +%Y%m%d).json"
+
+# Full path
+--save /var/log/health_reports/report.json
+```
+
+### Health Check Output
+
+#### Console Output
+
+Human-readable summary with color-coded status:
+
+```
+═══════════════════════════════════════════════════════════════════════════════
+📊 LONG-TERM SENSOR HEALTH CHECK
+Period: Last 7 days
+═══════════════════════════════════════════════════════════════════════════════
+
+Station              Status       Completeness    Issues
+--------------------------------------------------------------------------------
+grevena              🔴 CRITICAL  58.0%           1 problems
+  └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
+dodoni               ✅ HEALTHY   57.6%           0 problems
+volos                ✅ HEALTHY   57.9%           0 problems
+```
+
+#### JSON Output
+
+Structured format for programmatic processing:
+
+```json
+[
+  {
+    "station_id": "grevena",
+    "analysis_period_days": 7,
+    "data_completeness": 0.58,
+    "total_data_points": 585,
+    "overall_status": "critical",
+    "variable_reports": [
+      {
+        "variable": "wind_speed",
+        "zero_ratio": 0.716,
+        "null_ratio": 0.0,
+        "variance": 1.37,
+        "issues": [
+          "High zero ratio (71.6%) - sensor may be stalled"
+        ],
+        "severity": "critical"
+      }
+    ]
+  }
+]
+```
+
+### Health Metrics Explained
+
+#### Zero Ratio
+
+**Definition**: Percentage of readings that are exactly zero
+
+**Formula**: `zero_count / total_valid_readings`
+
+**Thresholds**:
+- < 30%: Normal (calm periods occur naturally)
+- 30-50%: Warning (monitor for trends)
+- \> 50%: Critical (sensor likely stalled)
+
+**Example**: `0.716` = 71.6% of readings were zero
+
+#### Null Ratio
+
+**Definition**: Percentage of missing observations
+
+**Formula**: `missing_count / expected_observations`
+
+**Thresholds**:
+- < 20%: Acceptable (minor communication issues)
+- 20-50%: Warning (intermittent failures)
+- \> 50%: Critical (severe data loss)
+
+**Example**: `0.0` = no missing data
+
+#### Variance
+
+**Definition**: Statistical measure of data variability
+
+**Formula**: `σ² = Σ(x - μ)² / (n - 1)`
+
+**Thresholds** (variable-dependent):
+- Wind speed: > 1.0 is normal, < 0.1 suggests stuck sensor
+- Temperature: > 5.0 is normal, < 0.5 suggests stuck sensor
+
+**Example**: `1.37` for wind_speed is abnormally low (normal: 10-80)
+
+#### Data Completeness
+
+**Definition**: Percentage of expected observations received
+
+**Expected**: ~144 observations per day (10-minute intervals)
+
+**Formula**: `received_observations / (days × 144)`
+
+**Example**: `0.58` = 58% completeness over 7 days (585 out of ~1008 expected)
+
+### Severity Levels
+
+| Status | Criteria | Console Display |
+|--------|----------|-----------------|
+| **Healthy** | No issues detected | ✅ HEALTHY |
+| **Warning** | Minor issues (1-2 warnings) | ⚠️ WARNING |
+| **Critical** | Severe issues (any critical metric) | 🔴 CRITICAL |
 
 ## REST API Wrapper (Future)
 

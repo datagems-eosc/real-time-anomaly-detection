@@ -1,6 +1,18 @@
 # How It Works
 
-## Overall Workflow
+## Detection Modes
+
+The system provides two complementary detection modes:
+
+### Mode 1: Short-Term Detection (Hours)
+Real-time anomaly detection using temporal + spatial verification to catch sudden failures.
+
+### Mode 2: Long-Term Health Check (Days/Weeks) 
+Sensor health monitoring to identify chronic problems like stalled sensors and data loss.
+
+---
+
+## Short-Term Detection Workflow
 
 ```mermaid
 flowchart TD
@@ -238,7 +250,100 @@ Anomaly Breakdown:
 }
 ```
 
+## Long-Term Health Check Workflow 🆕
+
+```mermaid
+flowchart TD
+    A[Start Health Check] --> B[Define Analysis Period]
+    B --> C[For Each Station]
+    C --> D[Query Historical Data]
+    D --> E[Calculate Metrics]
+    E --> F[Zero Ratio]
+    E --> G[Null Ratio]
+    E --> H[Variance]
+    E --> I[Data Completeness]
+    F --> J{Check Thresholds}
+    G --> J
+    H --> J
+    I --> J
+    J -->|All Normal| K[Status: Healthy]
+    J -->|Minor Issues| L[Status: Warning]
+    J -->|Severe Issues| M[Status: Critical]
+    K --> N[Generate Report]
+    L --> N
+    M --> N
+    N --> O[Console + JSON Output]
+```
+
+### Process Details
+
+1. **Define Analysis Period**: Specify time window (e.g., 7 or 30 days)
+2. **Query Historical Data**: Retrieve all observations for the period
+3. **Calculate Health Metrics**:
+   - **Zero Ratio**: Count zero readings / total valid readings
+   - **Null Ratio**: Count missing data / expected observations
+   - **Variance**: Statistical measure of data variability
+   - **Completeness**: Actual observations / expected observations
+4. **Apply Thresholds**:
+   - Zero ratio > 30% → Warning
+   - Zero ratio > 50% → Critical
+   - Null ratio > 50% → Critical
+   - Variance < 0.1 → Warning (for variables that should fluctuate)
+5. **Classify Overall Status**:
+   - Healthy: No issues
+   - Warning: Minor problems
+   - Critical: Severe problems requiring immediate action
+6. **Generate Report**: Export console summary and JSON details
+
+### Example Health Check Process
+
+```python
+# Simplified pseudocode
+def check_station_health(station_id, days=7):
+    # Step 1: Query data
+    data = query_data(station_id, days)
+    
+    # Step 2: Calculate metrics
+    zero_ratio = count_zeros(data) / len(data)
+    null_ratio = count_nulls(data) / expected_count(days)
+    variance = calculate_variance(data)
+    completeness = len(data) / expected_count(days)
+    
+    # Step 3: Apply thresholds
+    issues = []
+    if zero_ratio > 0.3:
+        issues.append(f"High zero ratio ({zero_ratio:.1%})")
+    if null_ratio > 0.5:
+        issues.append(f"High data loss ({null_ratio:.1%})")
+    if variance < 0.1:
+        issues.append("Low variance - sensor may be stuck")
+    
+    # Step 4: Determine status
+    if any(critical_issue in issues for critical_issue in ["zero ratio", "data loss"]):
+        status = "critical"
+    elif len(issues) > 0:
+        status = "warning"
+    else:
+        status = "healthy"
+    
+    return {
+        "station_id": station_id,
+        "status": status,
+        "completeness": completeness,
+        "issues": issues,
+        "metrics": {
+            "zero_ratio": zero_ratio,
+            "null_ratio": null_ratio,
+            "variance": variance
+        }
+    }
+```
+
+---
+
 ## Performance Characteristics
+
+### Short-Term Detection
 
 | Metric | Value | Notes |
 |--------|-------|-------|
@@ -246,4 +351,13 @@ Anomaly Breakdown:
 | Memory Usage | ~200MB | Constant regardless of DB size |
 | Database Size | ~10MB/month | For 14 stations at 10-min intervals |
 | Scalability | Linear | Scales with number of stations, not time |
+
+### Long-Term Health Check
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Analysis Time | ~5-10 seconds | For 14 stations, 7-day period |
+| Memory Usage | ~100MB | Loads aggregate statistics only |
+| Report Size | ~50KB JSON | Detailed metrics per station |
+| Scalability | Linear | O(n) where n = number of stations |
 

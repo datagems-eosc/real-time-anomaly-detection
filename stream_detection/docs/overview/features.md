@@ -1,8 +1,15 @@
 # Key Features
 
-## Dual-Verification Strategy
+## Two Detection Modes
 
-The core innovation of this system is its ability to distinguish between device failures and extreme weather events through a two-step verification process.
+This system provides two complementary detection capabilities:
+
+1. **Short-Term Detection**: Real-time anomaly detection (hours) using dual-verification
+2. **Long-Term Health Monitoring**: Sensor health tracking (days/weeks) for chronic issues 🆕
+
+## Dual-Verification Strategy (Short-Term)
+
+The core innovation of the short-term detection system is its ability to distinguish between device failures and extreme weather events through a two-step verification process.
 
 ### Why This Matters
 
@@ -112,6 +119,123 @@ While currently used as a command-line tool, the detection engine is designed wi
 - Output: Structured anomaly reports
 - Future-ready: Can be easily wrapped in a REST API
 
+## Long-Term Health Monitoring 🆕
+
+### Overview
+
+In addition to real-time anomaly detection, the system now provides long-term health monitoring to detect chronic sensor problems that develop over days or weeks.
+
+### What It Detects
+
+#### Stalled Sensors
+
+Detects sensors that are physically stuck or malfunctioning:
+
+- **Metric**: Zero Ratio - percentage of zero readings
+- **Threshold**: > 30% zero values over analysis period
+- **Common Cause**: Wind speed sensors stuck at zero due to mechanical failure
+- **Example**: Station "grevena" showed 71.6% zero readings over 7 days
+
+#### Data Loss
+
+Identifies communication failures or sensor outages:
+
+- **Metric**: Null Ratio - percentage of missing observations
+- **Threshold**: > 50% missing data
+- **Common Cause**: Network issues, power failures, sensor disconnection
+- **Impact**: Unreliable data for analysis and forecasting
+
+#### Sensor Degradation
+
+Flags sensors that are stuck or not responding to environmental changes:
+
+- **Metric**: Variance - statistical measure of data variability
+- **Threshold**: < 0.1 for variables that should naturally fluctuate
+- **Common Cause**: Sensor aging, calibration drift, physical obstruction
+- **Example**: Wind sensor showing constant low values despite changing conditions
+
+#### Data Completeness
+
+Tracks overall data availability per station:
+
+- **Metric**: Percentage of expected observations received
+- **Expected**: ~144 observations per day (10-minute intervals)
+- **Analysis**: Shows trends in data reliability over time
+- **Use Case**: Identify stations requiring maintenance
+
+### Usage
+
+```bash
+# Check all stations for the last 7 days
+python anomaly_detector.py --health-check --days 7
+
+# Check specific station over 30 days
+python anomaly_detector.py --health-check --days 30 --station grevena
+
+# Generate JSON report for monitoring integration
+python anomaly_detector.py --health-check --days 7 --save health_report.json
+```
+
+### Output Format
+
+#### Console Summary
+
+```text
+Station              Status       Completeness    Issues
+--------------------------------------------------------------------------------
+grevena              🔴 CRITICAL  58.0%           1 problems
+  └─ wind_speed: High zero ratio (71.6%) - sensor may be stalled
+dodoni               ✅ HEALTHY   57.6%           0 problems
+volos                ✅ HEALTHY   57.9%           0 problems
+```
+
+#### JSON Report
+
+```json
+{
+  "station_id": "grevena",
+  "analysis_period_days": 7,
+  "data_completeness": 0.58,
+  "total_data_points": 585,
+  "overall_status": "critical",
+  "variable_reports": [
+    {
+      "variable": "wind_speed",
+      "zero_ratio": 0.716,
+      "null_ratio": 0.0,
+      "variance": 1.37,
+      "issues": ["High zero ratio (71.6%) - sensor may be stalled"],
+      "severity": "critical"
+    }
+  ]
+}
+```
+
+### Severity Levels
+
+| Level | Criteria | Action |
+|-------|----------|--------|
+| **Healthy** | All metrics within normal ranges | Routine monitoring |
+| **Warning** | Minor issues detected | Schedule inspection |
+| **Critical** | Severe problems detected | Immediate maintenance required |
+
+### Integration
+
+The JSON reports are designed for easy integration with:
+
+- **Monitoring Dashboards**: Grafana, Kibana, custom dashboards
+- **Alerting Systems**: Email, Slack, PagerDuty notifications
+- **Maintenance Scheduling**: Automated ticket creation
+- **Quality Assurance**: Long-term performance tracking
+
+### Complementary to Short-Term Detection
+
+Long-term health monitoring complements real-time detection:
+
+- **Short-Term**: Catches sudden failures (sensor crash, extreme events)
+- **Long-Term**: Identifies gradual degradation (sensor drift, increasing data loss)
+- **Together**: Comprehensive coverage of all failure modes
+
 ## Extensibility
 
 Adding new features is straightforward:
@@ -120,4 +244,5 @@ Adding new features is straightforward:
 - **New Variables**: Add to the database schema and detector configuration
 - **New Spatial Methods**: Extend the `SpatialVerifier` class
 - **New Data Sources**: Replace the collector module
+- **New Health Metrics**: Extend the `HealthChecker` class with custom thresholds
 

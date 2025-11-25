@@ -368,7 +368,8 @@ class AnomalyDetector:
         med_corr = np.median(corrs)
         return {
             'status': 'success', 'median_corr': med_corr, 'n_neighbors': len(corrs),
-            'is_trend_consistent': med_corr > 0.6 or np.max(corrs) > 0.8
+            'is_trend_consistent': med_corr > 0.6 or np.max(corrs) > 0.8,
+            'neighbor_ids': nb_ids, 'pivot_data': pivot  # Add detailed data for reporting
         }
 
     def detect_station(self, station_id: str) -> Dict:
@@ -389,7 +390,14 @@ class AnomalyDetector:
                             if trend['is_trend_consistent']:
                                 rec.update({'type': 'weather_event', 'label': '🌧️ Weather Event', 'desc': f"Trend Consistent (Corr: {corr:.2f})"})
                             elif corr < 0.3:
-                                rec.update({'type': 'critical_failure', 'label': '🔴 Device Failure', 'desc': f"Trend Inconsistent (Corr: {corr:.2f})"})
+                                rec.update({
+                                    'type': 'critical_failure', 
+                                    'label': '🔴 Device Failure', 
+                                    'desc': f"Trend Inconsistent (Corr: {corr:.2f})",
+                                    'correlation': corr,
+                                    'neighbor_ids': trend.get('neighbor_ids', []),
+                                    'detail_data': trend.get('pivot_data')  # Store detailed time series
+                                })
                             else:
                                 rec.update({'type': 'warning', 'label': '⚠️ Suspected', 'desc': f"Weak Correlation (Corr: {corr:.2f})"})
                         else:
@@ -438,42 +446,267 @@ class ReportGenerator:
                 lines.append(f"  ⚠️  {v}: {info['count']} anomalies")
                 for rec in info['anomaly_records']:
                     lines.append(f"    • {rec['time']}: {rec['value']} -> {rec.get('label', 'Anomaly')} ({rec.get('desc', '')})")
+                    
+                    # If Device Failure, print detailed time series data
+                    if rec.get('type') == 'critical_failure' and 'detail_data' in rec:
+                        lines.append(f"\n    📊 DETAILED DIAGNOSIS - Device Failure at {r['station_id']}")
+                        lines.append(f"    Variable: {v} | Window: {window_info}")
+                        lines.append(f"    " + "="*70)
+                        
+                        pivot = rec['detail_data']
+                        station_id = r['station_id']
+                        neighbor_ids = rec.get('neighbor_ids', [])
+                        
+                        # Print header
+                        header = f"    {'Time':<20} | {station_id:>12} |"
+                        for nid in neighbor_ids[:5]:  # Limit to 5 neighbors for readability
+                            header += f" {nid:>12} |"
+                        lines.append(header)
+                        lines.append(f"    " + "-"*70)
+                        
+                        # Print data rows
+                        for idx, row in pivot.iterrows():
+                            time_str = idx.strftime('%Y-%m-%d %H:%M')
+                            row_str = f"    {time_str:<20} | {row[station_id]:>12.2f} |"
+                            for nid in neighbor_ids[:5]:
+                                if nid in row.index:
+                                    row_str += f" {row[nid]:>12.2f} |"
+                                else:
+                                    row_str += f" {'---':>12} |"
+                            lines.append(row_str)
+                        
+                        lines.append(f"    " + "="*70)
+                        lines.append(f"    💡 Analysis: Station {station_id} shows trend inconsistent with {len(neighbor_ids)} neighbors")
+                        lines.append(f"    Correlation: {rec.get('correlation', 0):.2f} (< 0.3 indicates likely sensor failure)\n")
+                        
             lines.append("")
         return "\n".join(lines)
 
+class LongTermHealthChecker:
+    """
+    Long-Term Sensor Health Checker
+    
+    Detects chronic sensor problems over extended periods (days/weeks):
+    - Stalled wind speed sensors (excessive zero values)
+    - Failed wind direction sensors (excessive NULL values)  
+    - Degraded sensor quality (low variance, poor correlation)
+    """
+    
+    def __init__(self, loader: DataLoader):
+        self.loader = loader
+        self.ZERO_RATIO_THRESHOLD = 0.3   # > 30% zeros
+        self.NULL_RATIO_THRESHOLD = 0.5   # > 50% missing
+        self.LOW_VARIANCE_THRESHOLD = 0.1  # Variance too low
+    
+    def get_long_term_data(self, station_id: str, days: int) -> pd.DataFrame:
+        """Get data for specified number of days."""
+        end_time = datetime.now()
+        start_time = end_time - timedelta(days=days)
+        return self.loader.get_window_data(
+            station_id, 
+            start_time=start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            end_time=end_time.strftime('%Y-%m-%d %H:%M:%S')
+        )
+    
+    def check_wind_speed_health(self, df: pd.DataFrame) -> Dict:
+        """Check wind speed sensor for stalling/stuck issues."""
+        wind_speed = df['wind_speed']
+        zero_ratio = (wind_speed == 0).sum() / len(wind_speed) if len(wind_speed) > 0 else 0
+        null_ratio = wind_speed.isna().sum() / len(wind_speed) if len(wind_speed) > 0 else 1
+        variance = wind_speed.dropna().var() if len(wind_speed.dropna()) > 1 else 0
+        
+        issues = []
+        if zero_ratio > self.ZERO_RATIO_THRESHOLD:
+            issues.append(f"High zero ratio ({zero_ratio:.1%}) - sensor may be stalled")
+        if null_ratio > self.NULL_RATIO_THRESHOLD:
+            issues.append(f"High missing rate ({null_ratio:.1%})")
+        if variance < self.LOW_VARIANCE_THRESHOLD and null_ratio < 0.9:
+            issues.append(f"Low variance ({variance:.3f}) - sensor may be stuck")
+        
+        return {
+            'variable': 'wind_speed',
+            'zero_ratio': zero_ratio,
+            'null_ratio': null_ratio,
+            'variance': variance,
+            'issues': issues,
+            'severity': 'critical' if issues else 'healthy'
+        }
+    
+    def check_wind_dir_health(self, df: pd.DataFrame) -> Dict:
+        """Check wind direction sensor for failure/stuck issues."""
+        # Note: wind_dir not in current schema, would need to add if available
+        # For now, return placeholder
+        return {
+            'variable': 'wind_dir',
+            'null_ratio': 1.0,
+            'issues': ['wind_dir not available in current schema'],
+            'severity': 'unknown'
+        }
+    
+    def check_station_health(self, station_id: str, days: int = 30) -> Dict:
+        """Comprehensive health check for a station over N days."""
+        df = self.get_long_term_data(station_id, days)
+        
+        if df.empty:
+            return {
+                'station_id': station_id,
+                'status': 'no_data',
+                'data_points': 0,
+                'message': f'No data for last {days} days'
+            }
+        
+        # Data completeness
+        total_expected = days * 24 * 6  # 6 obs/hour
+        completeness = len(df) / total_expected
+        
+        # Check variables
+        reports = []
+        reports.append(self.check_wind_speed_health(df))
+        
+        # Overall status
+        critical = any(r['severity'] == 'critical' for r in reports)
+        
+        return {
+            'station_id': station_id,
+            'analysis_period_days': days,
+            'data_completeness': completeness,
+            'total_data_points': len(df),
+            'overall_status': 'critical' if critical else 'healthy',
+            'variable_reports': reports
+        }
+    
+    def check_all_stations(self, days: int = 30) -> List[Dict]:
+        """Check all stations for long-term health issues."""
+        stations_df = self.loader.get_all_stations()
+        reports = []
+        
+        for _, station_row in stations_df.iterrows():
+            station_id = station_row['station_id']
+            report = self.check_station_health(station_id, days)
+            reports.append(report)
+        
+        return reports
+
+
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description='Weather Anomaly Detection System',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Short-term anomaly detection (current behavior)
+  python anomaly_detector.py --end "NOW" --window 6 --spatial-verify
+  
+  # Long-term sensor health check (NEW)
+  python anomaly_detector.py --health-check --days 30
+  python anomaly_detector.py --health-check --days 7 --station dodoni
+        """
+    )
     parser.add_argument('--db', default='weather_stream.db', help='SQLite DB path')
     parser.add_argument('--pg-url', help='PostgreSQL Connection String')
-    parser.add_argument('--end', required=True, help='End Time')
-    parser.add_argument('--window', type=int, required=True, help='Window Hours')
+    
+    # Mode selection
+    parser.add_argument('--health-check', action='store_true', 
+                       help='Run long-term health check instead of anomaly detection')
+    parser.add_argument('--days', type=int, default=30,
+                       help='Days to analyze for health check (default: 30)')
+    
+    # Anomaly detection args
+    parser.add_argument('--end', help='End Time (required for anomaly detection)')
+    parser.add_argument('--window', type=int, help='Window Hours (required for anomaly detection)')
     parser.add_argument('--temporal-method', default='3sigma')
     parser.add_argument('--spatial-verify', action='store_true')
-    parser.add_argument('--station')
+    parser.add_argument('--station', help='Specific station to check')
     
     args = parser.parse_args()
     
-    detector = AnomalyDetector(
-        db_path=args.db, pg_url=args.pg_url,
-        end_time=args.end, window_hours=args.window,
-        temporal_method=args.temporal_method, spatial_verify=args.spatial_verify
-    )
+    # Create data loader
+    if args.pg_url:
+        loader = PostgresLoader(args.pg_url)
+    else:
+        loader = SQLiteLoader(args.db)
     
     try:
-        results = [detector.detect_station(args.station)] if args.station else detector.detect_all_stations()
-        print(ReportGenerator.generate_text_report(results, f"Last {args.window}h from {args.end}", args.temporal_method))
+        if args.health_check:
+            # Long-term health check mode
+            print(f"\n{'#'*80}")
+            print(f"🏥 LONG-TERM SENSOR HEALTH CHECK")
+            print(f"   Period: Last {args.days} days")
+            print(f"{'#'*80}\n")
+            
+            checker = LongTermHealthChecker(loader)
+            
+            if args.station:
+                reports = [checker.check_station_health(args.station, args.days)]
+            else:
+                reports = checker.check_all_stations(args.days)
+            
+            # Print summary
+            print(f"\n{'='*80}")
+            print(f"📋 SUMMARY")
+            print(f"{'='*80}\n")
+            print(f"{'Station':<20} {'Status':<12} {'Completeness':<15} {'Issues'}")
+            print(f"{'-'*80}")
+            
+            for report in reports:
+                if report.get('status') == 'no_data':
+                    print(f"{report['station_id']:<20} {'NO DATA':<12} {'0%':<15} N/A")
+                    continue
+                
+                status = report['overall_status'].upper()
+                completeness = f"{report['data_completeness']:.1%}"
+                issue_count = sum(len(r['issues']) for r in report['variable_reports'])
+                
+                icon = '✅' if status == 'HEALTHY' else '🔴'
+                print(f"{report['station_id']:<20} {icon} {status:<10} {completeness:<15} {issue_count} problems")
+                
+                # Print detailed issues
+                for var_report in report['variable_reports']:
+                    if var_report['issues']:
+                        for issue in var_report['issues']:
+                            print(f"  └─ {var_report['variable']}: {issue}")
+            
+            print(f"{'-'*80}\n")
+            
+            # Export to JSON
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            output_file = f"health_report_{timestamp}.json"
+            with open(output_file, 'w') as f:
+                json.dump(reports, f, indent=2, default=str)
+            print(f"✅ Report exported to: {output_file}\n")
+            
+        else:
+            # Original anomaly detection mode
+            if not args.end or not args.window:
+                parser.error("--end and --window are required for anomaly detection mode")
+            
+            detector = AnomalyDetector(
+                db_path=args.db, pg_url=args.pg_url,
+                end_time=args.end, window_hours=args.window,
+                temporal_method=args.temporal_method, spatial_verify=args.spatial_verify
+            )
+            
+            results = [detector.detect_station(args.station)] if args.station else detector.detect_all_stations()
+            print(ReportGenerator.generate_text_report(results, f"Last {args.window}h from {args.end}", args.temporal_method))
+    
     finally:
-        detector.close()
+        loader.close()
 
 if __name__ == '__main__':
     main()
 
-# 现在 (SQLite):
-# python streaming_collector_sqlite.py --continuous
-# python anomaly_detector.py --end "NOW" --window 6
-
-# 未来 (TimescaleDB):
-# 1. 采集数据到 PG
-# python streaming_collector_sqlite.py --continuous --pg-url "postgresql://user:pass@localhost:5432/weather"
-# # 2. 从 PG 读取检测
-# python anomaly_detector.py --end "NOW" --window 6 --pg-url "postgresql://user:pass@localhost:5432/weather"
+# Usage Examples:
+# 
+# 1. Short-term anomaly detection (hours):
+#    python anomaly_detector.py --end "NOW" --window 6 --spatial-verify
+#    python anomaly_detector.py --end "2025-11-21 02:00:00" --window 6 --temporal-method arima
+#
+# 2. Long-term sensor health check (days/weeks) - NEW:
+#    python anomaly_detector.py --health-check --days 30
+#    python anomaly_detector.py --health-check --days 7 --station dodoni
+#
+# 3. Data collection:
+#    python streaming_collector_sqlite.py --continuous
+#
+# 4. With TimescaleDB:
+#    python anomaly_detector.py --pg-url "postgresql://user:pass@localhost:5432/weather" --end "NOW" --window 6
