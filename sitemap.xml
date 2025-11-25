@@ -2,74 +2,78 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/faq/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/license/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/api/examples/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/api/overview/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/api/parameters/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/api/response/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/examples/device-failure/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
+    </url>
+    <url>
+         <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/examples/health-check/</loc>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/examples/weather-event/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/overview/features/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/overview/how-it-works/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/setup/configuration/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/setup/database/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/setup/deployment/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/setup/installation/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/system/architecture/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/system/detection-methods/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
     <url>
          <loc>https://datagems-eosc.github.io/real-time-anomaly-detection/system/station-network/</loc>
-         <lastmod>2025-11-24</lastmod>
+         <lastmod>2025-11-25</lastmod>
     </url>
 </urlset>

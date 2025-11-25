@@ -282,19 +282,19 @@
 <nav aria-label="How It Works" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#step-1-temporal-detection">
+<a class="md-nav__link" href="#mode-1-short-term-anomaly-detection-hours">
 <span class="md-ellipsis">
       
-        Step 1: Temporal Detection
+        Mode 1: Short-Term Anomaly Detection (Hours)
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#step-2-spatial-verification">
+<a class="md-nav__link" href="#mode-2-long-term-health-check-daysweeks">
 <span class="md-ellipsis">
       
-        Step 2: Spatial Verification
+        Mode 2: Long-Term Health Check (Days/Weeks) 🆕
       
     </span>
 </a>
@@ -704,19 +704,19 @@
 <nav aria-label="How It Works" class="md-nav">
 <ul class="md-nav__list">
 <li class="md-nav__item">
-<a class="md-nav__link" href="#step-1-temporal-detection">
+<a class="md-nav__link" href="#mode-1-short-term-anomaly-detection-hours">
 <span class="md-ellipsis">
       
-        Step 1: Temporal Detection
+        Mode 1: Short-Term Anomaly Detection (Hours)
       
     </span>
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#step-2-spatial-verification">
+<a class="md-nav__link" href="#mode-2-long-term-health-check-daysweeks">
 <span class="md-ellipsis">
       
-        Step 2: Spatial Verification
+        Mode 2: Long-Term Health Check (Days/Weeks) 🆕
       
     </span>
 </a>
@@ -793,22 +793,35 @@
 <h2 id="key-features">Key Features</h2>
 <ul>
 <li><strong>Dual-Verification Strategy</strong>: Combines temporal self-checks with spatial neighbor verification to minimize false alarms</li>
+<li><strong>Long-Term Health Monitoring</strong> 🆕: Tracks sensor health over days/weeks to detect chronic issues like stalled sensors, data loss, and degradation</li>
 <li><strong>Multi-Method Support</strong>: Includes ARIMA, Z-Score, MAD, IQR, Isolation Forest, STL, and LOF detection methods</li>
 <li><strong>Real-Time Processing</strong>: Streaming architecture with 10-minute data ingestion intervals</li>
 <li><strong>Spatial Intelligence</strong>: Automatically detects and correlates anomalies across neighboring stations within 100km radius</li>
 <li><strong>Scalable Architecture</strong>: Supports both SQLite for standalone deployment and TimescaleDB for enterprise scale</li>
 <li><strong>Interactive Visualization</strong>: Generates station network maps showing spatial relationships</li>
+<li><strong>JSON Export</strong>: Machine-readable reports for integration with monitoring dashboards</li>
 </ul>
 <h2 id="how-it-works">How It Works</h2>
-<p>The Real-Time Anomaly Detection service works through a two-step verification process:</p>
-<h3 id="step-1-temporal-detection">Step 1: Temporal Detection</h3>
-<p>Analyzes each station's current readings against its own historical data using time series methods (e.g., ARIMA) to detect deviations from expected patterns.</p>
-<h3 id="step-2-spatial-verification">Step 2: Spatial Verification</h3>
-<p>Compares the suspect station's behavior with neighboring stations to determine if the anomaly is:</p>
+<p>The Real-Time Anomaly Detection service provides two complementary detection modes:</p>
+<h3 id="mode-1-short-term-anomaly-detection-hours">Mode 1: Short-Term Anomaly Detection (Hours)</h3>
+<p>Real-time detection using a two-step verification process:</p>
+<p><strong>Step 1: Temporal Detection</strong><br/>
+Analyzes each station's current readings against its own historical data using time series methods (e.g., ARIMA) to detect deviations from expected patterns.</p>
+<p><strong>Step 2: Spatial Verification</strong><br/>
+Compares the suspect station's behavior with neighboring stations to determine if the anomaly is:</p>
 <ul>
 <li><strong>Weather Event</strong>: Neighboring stations show similar patterns (high correlation &gt; 0.6)</li>
 <li><strong>Device Failure</strong>: Only this station is anomalous (low correlation &lt; 0.3)</li>
 </ul>
+<h3 id="mode-2-long-term-health-check-daysweeks">Mode 2: Long-Term Health Check (Days/Weeks) 🆕</h3>
+<p>Monitors sensor health over extended periods to detect chronic problems:</p>
+<ul>
+<li><strong>Stalled Sensors</strong>: Detects sensors stuck at zero (&gt;30% zero readings)</li>
+<li><strong>Data Loss</strong>: Identifies excessive missing data (&gt;50% loss rate)</li>
+<li><strong>Sensor Degradation</strong>: Flags abnormally low variance indicating stuck sensors</li>
+<li><strong>Completeness Tracking</strong>: Monitors overall data quality per station</li>
+</ul>
+<p>This mode generates comprehensive JSON reports for integration with monitoring systems.</p>
 <h3 id="data-flow">Data Flow</h3>
 <pre class="mermaid"><code>graph LR
     A[NOA API] --&gt;|Every 10 min| B[Data Collector]
@@ -828,12 +841,18 @@
 <a href="#__codelineno-0-4" id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># Start data collection</span>
 <a href="#__codelineno-0-5" id="__codelineno-0-5" name="__codelineno-0-5"></a>./manage_collector.sh<span class="w"> </span>start
 <a href="#__codelineno-0-6" id="__codelineno-0-6" name="__codelineno-0-6"></a>
-<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1"># Run detection</span>
+<a href="#__codelineno-0-7" id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1"># Short-term detection (real-time)</span>
 <a href="#__codelineno-0-8" id="__codelineno-0-8" name="__codelineno-0-8"></a>python<span class="w"> </span>anomaly_detector.py<span class="w"> </span><span class="se">\</span>
 <a href="#__codelineno-0-9" id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="w">  </span>--end<span class="w"> </span><span class="s2">"NOW"</span><span class="w"> </span><span class="se">\</span>
 <a href="#__codelineno-0-10" id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="w">  </span>--window<span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="se">\</span>
 <a href="#__codelineno-0-11" id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="w">  </span>--temporal-method<span class="w"> </span>arima<span class="w"> </span><span class="se">\</span>
 <a href="#__codelineno-0-12" id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">  </span>--spatial-verify
+<a href="#__codelineno-0-13" id="__codelineno-0-13" name="__codelineno-0-13"></a>
+<a href="#__codelineno-0-14" id="__codelineno-0-14" name="__codelineno-0-14"></a><span class="c1"># Long-term health check (weekly)</span>
+<a href="#__codelineno-0-15" id="__codelineno-0-15" name="__codelineno-0-15"></a>python<span class="w"> </span>anomaly_detector.py<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-16" id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">  </span>--health-check<span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-17" id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="w">  </span>--days<span class="w"> </span><span class="m">7</span><span class="w"> </span><span class="se">\</span>
+<a href="#__codelineno-0-18" id="__codelineno-0-18" name="__codelineno-0-18"></a><span class="w">  </span>--save<span class="w"> </span>health_report.json
 </code></pre></div>
 <p>For detailed installation instructions, see the <a href="setup/installation/">Installation Guide</a>.</p>
 <h2 id="data-format">Data Format</h2>
