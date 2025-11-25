@@ -75,11 +75,11 @@ The system follows a **Pull-Based Streaming Architecture**:
 
 2.  **Detect (`anomaly_detector.py`)**:
     *   **Short-term Detection**: Uses a **Sliding Window** (e.g., last 6 hours) for real-time anomaly detection using temporal + spatial dual-verification
-    *   **Long-term Health Check** (🆕 NEW): Analyzes sensor health over days/weeks to detect chronic issues:
-        - 🔴 **Stalled sensors**: Wind speed stuck at zero (>30% zero readings)
-        - 🔴 **Failed sensors**: Excessive missing data (>50% data loss)
-        - 🔴 **Degraded sensors**: Abnormally low variance (<0.1)
-        - 📊 **Data completeness tracking**: Monitors overall data quality per station
+    *   **Long-term Health Check**: Analyzes sensor health over days/weeks to detect chronic issues:
+        -  **Stalled sensors**: Wind speed stuck at zero (>30% zero readings)
+        -  **Failed sensors**: Excessive missing data (>50% data loss)
+        -  **Degraded sensors**: Abnormally low variance (<0.1)
+        -  **Data completeness tracking**: Monitors overall data quality per station
     *   Triggered on-demand or via cron/scheduler.
 
 ### 2. Database Schema
