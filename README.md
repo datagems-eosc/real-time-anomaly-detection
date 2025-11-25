@@ -214,17 +214,14 @@ python anomaly_detector.py --end "2025-11-23 09:00:00" --window 6 --temporal-met
 **Example Output**:
 
 ```
-🔌 Connected to SQLite: weather_stream.db
-ANOMALY DETECTION REPORT
+Connected to SQLite: weather_stream.db
 Date: 2025-11-25 00:25:36
 Window: Last 6h from 2025-11-23 09:00:00
 --------------------------------------------------
 Total: 14 | Anomalous: 4
---------------------------------------------------
 [Station: dodoni]
   ⚠️  wind_speed: 1 anomalies
     • 2025-11-23 05:40:00: 11.3 -> 🔴 Device Failure (Trend Inconsistent (Corr: -0.17))
-
     📊 DETAILED DIAGNOSIS - Device Failure at dodoni
     Variable: wind_speed | Window: Last 6h from 2025-11-23 09:00:00
     ======================================================================
@@ -239,7 +236,6 @@ Total: 14 | Anomalous: 4
     💡 Analysis: Station dodoni shows trend inconsistent with 1 neighbors
     Correlation: -0.17 (< 0.3 indicates likely sensor failure)
 
-
 [Station: makrinitsa]
   ⚠️  temp_out: 1 anomalies
     • 2025-11-23 09:00:00: 11.9 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.77))
@@ -247,10 +243,6 @@ Total: 14 | Anomalous: 4
 [Station: uth_volos]
   ⚠️  wind_speed: 1 anomalies
     • 2025-11-23 09:00:00: 19.3 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.75))
-
-[Station: volos-port]
-  ⚠️  wind_speed: 1 anomalies
-    • 2025-11-23 09:00:00: 25.7 -> 🌧️ Weather Event (Trend Consistent (Corr: 0.70))
 ```
 
 **Key Observations**:
