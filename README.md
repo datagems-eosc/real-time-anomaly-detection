@@ -247,12 +247,6 @@ python anomaly_detector.py --health-check --days 7 --save health_report.json
 ═══════════════════════════════════════════════════════════════════════════════
 📊 LONG-TERM SENSOR HEALTH CHECK
 Period: Last 7 days
-═══════════════════════════════════════════════════════════════════════════════
-
-═══════════════════════════════════════════════════════════════════════════════
-📋 SUMMARY
-═══════════════════════════════════════════════════════════════════════════════
-
 Station              Status       Completeness    Issues
 --------------------------------------------------------------------------------
 amfissa              ✅ HEALTHY   57.4%           0 problems
@@ -264,12 +258,7 @@ heraclion            ✅ HEALTHY   57.9%           0 problems
 kolympari            ✅ HEALTHY   56.1%           0 problems
 makrinitsa           ✅ HEALTHY   52.7%           0 problems
 portaria             ✅ HEALTHY   57.9%           0 problems
-sparti               ✅ HEALTHY   57.6%           0 problems
-uth_volos            ✅ HEALTHY   54.9%           0 problems
-vlasti               ✅ HEALTHY   55.1%           0 problems
-volos                ✅ HEALTHY   57.9%           0 problems
-volos-port           ✅ HEALTHY   58.0%           0 problems
-zagora               ✅ HEALTHY   45.3%           0 problems
+...
 --------------------------------------------------------------------------------
 
 ✅ Report exported to: health_report_20251124_233705.json
@@ -299,18 +288,12 @@ The system exports detailed machine-readable reports in JSON format:
 ```
 
 **JSON Fields Explained**:
-- `station_id`: Station identifier
-- `analysis_period_days`: Time window analyzed (7 or 30 days)
 - `data_completeness`: Percentage of expected data received (0.58 = 58%)
-- `total_data_points`: Actual number of observations collected
 - `overall_status`: "healthy", "warning", or "critical"
 - `variable_reports`: Array of metrics per monitored variable
   - `zero_ratio`: Proportion of zero values (0.716 = 71.6%)
   - `null_ratio`: Proportion of missing values
   - `variance`: Statistical variance (low values indicate stuck sensors)
-  - `issues`: Human-readable problem descriptions
-  - `severity`: Problem level for this variable
-
 ---
 
 ### 3. Output Explanation (Short-Term Detection)
