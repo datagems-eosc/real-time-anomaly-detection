@@ -392,7 +392,7 @@ Shows exactly *why* a station was flagged.
 
 **Core Capabilities**:
 -  **Short-term Detection**: Real-time anomaly detection (hours) with time-space dual verification
--  **Long-term Health Check**: Sensor health monitoring (days/weeks) - detects stalled sensors, data loss, and degradation 🆕
+-  **Long-term Health Check**: Sensor health monitoring (days/weeks) - detects stalled sensors, data loss
 -  **Spatial Verification**: Distinguish weather events from device failures using neighbor correlation
 -  **Multiple Detection Methods**: ARIMA, 3-Sigma, MAD, IQR, Isolation Forest, STL, LOF
 -  **JSON Export**: Machine-readable reports for integration with monitoring systems
